@@ -37,4 +37,8 @@ int main() {
 
 ```
 
-The above example waits for f to resolve in separate thread, while p is set in another thread after one second.
+The above example waits for `f` to resolve in a separate thread, while p is set in another thread after one second.
+
+## API
+
+Coming soon.
