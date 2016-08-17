@@ -514,7 +514,7 @@ namespace thenable {
 
                 template <typename... Args>
                 inline decltype( auto ) then( Args&&... args ) {
-                    //NOTE: if `then` is used instead of `then2`, the namespace should be explicitely given, or this function will recurse
+                    //NOTE: if `then` is used instead of `then2`, the namespace should be explicitly given, or this function will recurse
                     return then2( move( *this ), std::forward<Args>( args )... );
                 }
         };
