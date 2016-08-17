@@ -220,7 +220,7 @@ namespace thenable {
         template <typename Functor, typename R = fn_result_of<Functor>>
         struct then_invoke_helper {
             template <typename... Args>
-            inline static decltype( auto ) invoke( Functor f, Args... args ) {
+            inline static decltype( auto ) invoke( Functor f, Args&&... args ) {
                 return optional_get<R>::get( f( forward<Args>( args )... ));
             }
         };
@@ -231,7 +231,7 @@ namespace thenable {
         template <typename Functor>
         struct then_invoke_helper<Functor, void> {
             template <typename... Args>
-            inline static void invoke( Functor f, Args... args ) {
+            inline static void invoke( Functor f, Args&&... args ) {
                 f( forward<Args>( args )... );
             }
         };
@@ -513,7 +513,7 @@ namespace thenable {
                 }
 
                 template <typename... Args>
-                inline decltype( auto ) then( Args... args ) {
+                inline decltype( auto ) then( Args&&... args ) {
                     //NOTE: if `then` is used instead of `then2`, the namespace should be explicitely given, or this function will recurse
                     return then2( move( *this ), std::forward<Args>( args )... );
                 }
