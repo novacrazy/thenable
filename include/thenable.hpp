@@ -2,8 +2,8 @@
 // Created by Aaron on 8/17/2016.
 //
 
-#ifndef THEN_IMPLEMENTATION_HPP
-#define THEN_IMPLEMENTATION_HPP
+#ifndef THENABLE_IMPLEMENTATION_HPP
+#define THENABLE_IMPLEMENTATION_HPP
 
 #include "function_traits.hpp"
 
@@ -71,8 +71,6 @@ namespace thenable {
          * There are no default overloads because these will ONLY be called if the then_launch::detached
          * flag is given, ensuring these overloads are called instead of the above.
          * */
-
-        //TODO: Implement these
 
         template <typename T, typename Functor>
         decltype( auto ) then( future<T> &, Functor, then_launch );
@@ -540,4 +538,4 @@ namespace thenable {
     using detail::then_launch;
 }
 
-#endif //THEN_IMPLEMENTATION_HPP
+#endif //THENABLE_IMPLEMENTATION_HPP
