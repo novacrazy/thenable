@@ -5,7 +5,7 @@ This is a generic implementation of `then` for C++14, allowing you to chain toge
 
 ## Example:
 ```C++
-#include "then.hpp"
+#include "thenable.hpp"
 
 #include <iostream>
 #include <chrono>
