@@ -25,13 +25,11 @@
 
 namespace thenable {
     namespace detail {
-        using namespace std;
-
         /*
          * The default launch policy of std::async is a combination of the std::launch flags,
          * allowing it to choose whatever policy it wants depending on the system.
          * */
-        constexpr launch default_policy = launch::deferred | launch::async;
+        constexpr std::launch default_policy = std::launch::deferred | std::launch::async;
 
         /*
          * This is a special launch type where it is guarenteed to spawn a new thread to run the task
@@ -57,6 +55,9 @@ namespace thenable {
         template <typename>
         class ThenableSharedFuture;
 
+        template <typename>
+        class ThenablePromise;
+
         //////////
 
         /*
@@ -64,16 +65,16 @@ namespace thenable {
          * */
 
         template <typename T, typename Functor>
-        decltype( auto ) then( future<T> &, Functor, launch = default_policy );
+        decltype( auto ) then( std::future<T> &, Functor, std::launch = default_policy );
 
         template <typename T, typename Functor>
-        decltype( auto ) then( shared_future<T>, Functor, launch = default_policy );
+        decltype( auto ) then( std::shared_future<T>, Functor, std::launch = default_policy );
 
         template <typename T, typename Functor>
-        decltype( auto ) then( future<T> &&, Functor, launch = default_policy );
+        decltype( auto ) then( std::future<T> &&, Functor, std::launch = default_policy );
 
         template <typename T, typename Functor>
-        decltype( auto ) then( promise<T> &, Functor, launch = default_policy );
+        decltype( auto ) then( std::promise<T> &, Functor, std::launch = default_policy );
 
         //////////
 
@@ -85,16 +86,16 @@ namespace thenable {
          * */
 
         template <typename T, typename Functor>
-        decltype( auto ) then( future<T> &, Functor, then_launch );
+        decltype( auto ) then( std::future<T> &, Functor, then_launch );
 
         template <typename T, typename Functor>
-        decltype( auto ) then( shared_future<T>, Functor, then_launch );
+        decltype( auto ) then( std::shared_future<T>, Functor, then_launch );
 
         template <typename T, typename Functor>
-        decltype( auto ) then( future<T> &&, Functor, then_launch );
+        decltype( auto ) then( std::future<T> &&, Functor, then_launch );
 
         template <typename T, typename Functor>
-        decltype( auto ) then( promise<T> &, Functor, then_launch );
+        decltype( auto ) then( std::promise<T> &, Functor, then_launch );
 
         //////////
 
@@ -112,128 +113,70 @@ namespace thenable {
          * */
 
         template <typename T>
-        inline ThenableFuture<T> to_thenable( future<T> && );
+        inline ThenableFuture<T> to_thenable( std::future<T> && );
 
         template <typename T>
-        inline ThenableSharedFuture<T> to_thenable( shared_future<T> );
+        inline ThenableSharedFuture<T> to_thenable( std::shared_future<T> );
 
         //////////
 
         /*
          * recursive_get:
          *
-         * This structure will continually call "get" on any future object returned by another future,
+         * This will continually call "get" on any future or promise objects returned by another future,
          * recursively, basically resolving the entire chain at once
          * */
 
         /*
-         * If K is not a future type, just return k.get()
+         * Forward declarations
          * */
-        template <typename K>
-        struct recursive_get {
-            inline static decltype( auto ) get( future<K> &&k ) {
-                return k.get();
-            }
 
-            /*
-             * Overload for shared_future, which can be passed by value if needed
-             * */
-            inline static decltype( auto ) get( shared_future<K> k ) {
-                return k.get();
-            }
+        template <typename T>
+        decltype( auto ) recursive_get( std::future<T> && );
 
-            /*
-             * Overload for promises
-             * */
-            inline static decltype( auto ) get( promise<K> &&k ) {
-                return recursive_get<K>::get( k.get_future());
-            }
+        template <typename T>
+        decltype( auto ) recursive_get( std::shared_future<T> && );
+
+        template <typename T>
+        decltype( auto ) recursive_get( std::promise<T> && );
+
+        template <typename T>
+        decltype( auto ) recursive_get( ThenableFuture<T> && );
+
+        template <typename T>
+        decltype( auto ) recursive_get( ThenableSharedFuture<T> && );
+
+        template <typename T>
+        decltype( auto ) recursive_get( ThenablePromise<T> && );
+
+        template <typename T>
+        T recursive_get( T && );
+
+        /*
+         * std future implementations. ThenableX implementations are below their class implementation at the bottom of the file.
+         * */
+
+        template <typename T>
+        inline decltype( auto ) recursive_get( std::future<T> &&t ) {
+            return recursive_get( t.get());
+        };
+
+        template <typename T>
+        inline decltype( auto ) recursive_get( std::shared_future<T> &&t ) {
+            return recursive_get( t.get());
+        };
+
+        template <typename T>
+        inline decltype( auto ) recursive_get( std::promise<T> &&t ) {
+            return recursive_get( t.get_future());
         };
 
         /*
-         * If K was a future type, call recursive_get again on the result of k.get()
-         * */
-        template <typename P>
-        struct recursive_get<future<P>> {
-            /*
-             * Overload for a future resolving to a future
-             * */
-            inline static decltype( auto ) get( future<future<P>> &&k ) {
-                return recursive_get<P>::get( k.get());
-            }
-
-            /*
-             * Overload for a shared_future resolving to a future
-             * */
-            inline static decltype( auto ) get( shared_future<future<P>> k ) {
-                return recursive_get<P>::get( k.get());
-            }
-        };
-
-        /*
-         * If K was a shared_future type, call recursive_get again on the result of k.get()
-         * */
-        template <typename P>
-        struct recursive_get<shared_future<P>> {
-            /*
-             * Overload for future resolving to a shared_future
-             * */
-            inline static decltype( auto ) get( future<shared_future<P>> &&k ) {
-                return recursive_get<P>::get( k.get());
-            }
-
-            /*
-             * Overload for shared_future resolving to another shared_future
-             * */
-            inline static decltype( auto ) get( shared_future<shared_future<P>> k ) {
-                return recursive_get<P>::get( k.get());
-            }
-        };
-
-        //////////
-
-        /*
-         * optional_get
-         *
-         * This structure will recursively call get() only if the type is a future,
-         * otherwise it just forwards the value through like it wasn't there
-         * */
-
-        /*
-         * The is the raw version that just passes the value through like it wasn't there
+         * This just forwards anything that is NOT a promise or future and doesn't do anything to it.
          * */
         template <typename T>
-        struct optional_get {
-            /*
-             * No special forwarding or moves are done by this, because the compiler should
-             * optimize away any copies, given the sheer simplicity of this. I mean, it's basically the
-             * epitome of the identity function, especially with the decltype(auto) allowing it to choose
-             * the best return type for perfectly forwarding it.
-             * */
-
-            inline static decltype( auto ) get( T t ) {
-                return t;
-            }
-        };
-
-        /*
-         * Specialization for future
-         * */
-        template <typename R>
-        struct optional_get<future<R>> {
-            inline static decltype( auto ) get( future<R> &&r ) {
-                return recursive_get<R>::get( move( r ));
-            }
-        };
-
-        /*
-         * Specialization for shared_future
-         * */
-        template <typename R>
-        struct optional_get<shared_future<R>> {
-            inline static decltype( auto ) get( shared_future<R> r ) {
-                return recursive_get<R>::get( r );
-            }
+        inline T recursive_get( T &&t ) {
+            return std::forward<T>( t );
         };
 
         //////////
@@ -249,7 +192,7 @@ namespace thenable {
         struct then_invoke_helper {
             template <typename... Args>
             inline static decltype( auto ) invoke( Functor f, Args &&... args ) {
-                return optional_get<R>::get( f( forward<Args>( args )... ));
+                return recursive_get( f( std::forward<Args>( args )... ));
             }
         };
 
@@ -260,7 +203,7 @@ namespace thenable {
         struct then_invoke_helper<Functor, void> {
             template <typename... Args>
             inline static void invoke( Functor f, Args &&... args ) {
-                f( forward<Args>( args )... );
+                f( std::forward<Args>( args )... );
             }
         };
 
@@ -275,24 +218,24 @@ namespace thenable {
 
         template <typename T, typename Functor>
         struct then_helper {
-            inline static decltype( auto ) dispatch( future<T> &&s, Functor f ) {
-                return then_invoke_helper<Functor>::invoke( f, recursive_get<T>::get( move( s )));
+            inline static decltype( auto ) dispatch( std::future<T> &&s, Functor f ) {
+                return then_invoke_helper<Functor>::invoke( f, recursive_get( std::forward<std::future<T>>( s )));
             }
 
-            inline static decltype( auto ) dispatch( shared_future<T> s, Functor f ) {
-                return then_invoke_helper<Functor>::invoke( f, recursive_get<T>::get( s ));
+            inline static decltype( auto ) dispatch( std::shared_future<T> s, Functor f ) {
+                return then_invoke_helper<Functor>::invoke( f, recursive_get( s ));
             }
         };
 
         template <typename Functor>
         struct then_helper<void, Functor> {
-            inline static decltype( auto ) dispatch( future<void> &&s, Functor f ) {
+            inline static decltype( auto ) dispatch( std::future<void> &&s, Functor f ) {
                 s.get();
 
                 return then_invoke_helper<Functor>::invoke( f );
             }
 
-            inline static decltype( auto ) dispatch( shared_future<void> s, Functor f ) {
+            inline static decltype( auto ) dispatch( std::shared_future<void> s, Functor f ) {
                 s.get();
 
                 return then_invoke_helper<Functor>::invoke( f );
@@ -312,19 +255,19 @@ namespace thenable {
          * Overload for simple futures
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( future<T> &&s, Functor f, launch policy ) {
-            return async( policy, [policy, f]( future <T> &&s2 ) {
-                return then_helper<T, Functor>::dispatch( move( s2 ), f );
-            }, move( s ));
+        inline decltype( auto ) then( std::future<T> &&s, Functor f, std::launch policy ) {
+            return std::async( policy, [policy, f]( std::future<T> &&s2 ) {
+                return then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s2 ), f );
+            }, std::forward<std::future<T>>( s ));
         };
 
         /*
-         * Overload for futures by references. It will take ownership and move the future,
+         * Overload for futures by references. It will take ownership and forward the future,
          * calling the above overload.
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( future<T> &s, Functor f, launch policy ) {
-            return then( move( s ), f, policy );
+        inline decltype( auto ) then( std::future<T> &s, Functor f, std::launch policy ) {
+            return then( std::forward<std::future<T>>( s ), f, policy );
         };
 
         /*
@@ -332,8 +275,8 @@ namespace thenable {
          * It's similar to the first overload, but can capture the shared_future in the lambda.
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( shared_future<T> s, Functor f, launch policy ) {
-            return async( policy, [policy, s, f]() {
+        inline decltype( auto ) then( std::shared_future<T> s, Functor f, std::launch policy ) {
+            return std::async( policy, [policy, s, f]() {
                 return then_helper<T, Functor>::dispatch( s, f );
             } );
         };
@@ -343,7 +286,7 @@ namespace thenable {
          * from it and the promise is left intact, so it can be used elsewhere.
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( promise<T> &s, Functor f, launch policy ) {
+        inline decltype( auto ) then( std::promise<T> &s, Functor f, std::launch policy ) {
             return then( s.get_future(), f, policy );
         };
 
@@ -360,22 +303,22 @@ namespace thenable {
         template <typename T>
         struct detached_then_helper {
             template <typename Functor, typename K>
-            static inline void dispatch( promise<T> &p, future<K> &&s, Functor f ) {
+            static inline void dispatch( std::promise<T> &p, std::future<K> &&s, Functor f ) {
                 try {
-                    p.set_value( then_helper<K, Functor>::dispatch( move( s ), f ));
+                    p.set_value( then_helper<K, Functor>::dispatch( std::forward<std::future<K>>( s ), f ));
 
                 } catch( ... ) {
-                    p.set_exception( current_exception());
+                    p.set_exception( std::current_exception());
                 }
             }
 
             template <typename Functor, typename K>
-            static inline void dispatch( promise<T> &p, shared_future<K> s, Functor f ) {
+            static inline void dispatch( std::promise<T> &p, std::shared_future<K> s, Functor f ) {
                 try {
                     p.set_value( then_helper<K, Functor>::dispatch( s, f ));
 
                 } catch( ... ) {
-                    p.set_exception( current_exception());
+                    p.set_exception( std::current_exception());
                 }
             }
         };
@@ -386,26 +329,26 @@ namespace thenable {
         template <>
         struct detached_then_helper<void> {
             template <typename Functor, typename K>
-            static inline void dispatch( promise<void> &p, future<K> &&s, Functor f ) {
+            static inline void dispatch( std::promise<void> &p, std::future<K> &&s, Functor f ) {
                 try {
-                    then_helper<K, Functor>::dispatch( move( s ), f );
+                    then_helper<K, Functor>::dispatch( std::forward<std::future<K>>( s ), f );
 
                     p.set_value();
 
                 } catch( ... ) {
-                    p.set_exception( current_exception());
+                    p.set_exception( std::current_exception());
                 }
             }
 
             template <typename Functor, typename K>
-            static inline void dispatch( promise<void> &p, shared_future<K> s, Functor f ) {
+            static inline void dispatch( std::promise<void> &p, std::shared_future<K> s, Functor f ) {
                 try {
                     then_helper<K, Functor>::dispatch( s, f );
 
                     p.set_value();
 
                 } catch( ... ) {
-                    p.set_exception( current_exception());
+                    p.set_exception( std::current_exception());
                 }
             }
         };
@@ -424,12 +367,12 @@ namespace thenable {
          * Overload for simple futures
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( future<T> &&s, Functor f, then_launch policy ) {
+        inline decltype( auto ) then( std::future<T> &&s, Functor f, then_launch policy ) {
             //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
-            typedef decltype( then_helper<T, Functor>::dispatch( move( s ), f )) P;
+            typedef decltype( then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s ), f )) P;
 
             //This is here because these templates are so complicated it's confused my IDE, so I kind of have to hint it's a type
-            typedef promise <P> promiseP;
+            typedef std::promise<P> promiseP;
 
             assert( policy == then_launch::detached );
 
@@ -437,11 +380,11 @@ namespace thenable {
              * A shared pointer is used to keep the shared state of the future alive in both threads until it's resolved
              * */
 
-            auto p = make_shared<promiseP>();
+            std::shared_ptr<promiseP> p = std::make_shared<promiseP>();
 
-            thread( [p, f]( future <T> &&s2 ) {
-                detached_then_helper<P>::dispatch( *p, move( s2 ), f );
-            }, move( s )).detach();
+            std::thread( [p, f]( std::future<T> &&s2 ) {
+                detached_then_helper<P>::dispatch( *p, std::forward<std::future<T>>( s2 ), f );
+            }, std::forward<std::future<T>>( s )).detach();
 
             return p->get_future();
         };
@@ -451,8 +394,8 @@ namespace thenable {
          * calling the above overload.
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( future<T> &s, Functor f, then_launch policy ) {
-            return then( move( s ), f, policy );
+        inline decltype( auto ) then( std::future<T> &s, Functor f, then_launch policy ) {
+            return then( std::move( s ), f, policy );
         };
 
         /*
@@ -460,12 +403,12 @@ namespace thenable {
          * It's similar to the first overload, but can capture the shared_future in the lambda.
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( shared_future<T> s, Functor f, then_launch policy ) {
+        inline decltype( auto ) then( std::shared_future<T> s, Functor f, then_launch policy ) {
             //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
             typedef decltype( then_helper<T, Functor>::dispatch( s, f )) P;
 
             //This is here because these templates are so complicated it's confused my IDE, so I kind of have to hint it's a type
-            typedef promise <P> promiseP;
+            typedef std::promise<P> promiseP;
 
             assert( policy == then_launch::detached );
 
@@ -473,9 +416,9 @@ namespace thenable {
              * A shared pointer is used to keep the shared state of the future alive in both threads until it's resolved
              * */
 
-            auto p = make_shared<promiseP>();
+            std::shared_ptr<promiseP> p = std::make_shared<promiseP>();
 
-            thread( [s, p, f] {
+            std::thread( [s, p, f] {
                 detached_then_helper<P>::dispatch( *p, s, f );
             } ).detach();
 
@@ -487,7 +430,7 @@ namespace thenable {
          * from it and the promise is left intact, so it can be used elsewhere.
          * */
         template <typename T, typename Functor>
-        inline decltype( auto ) then( promise<T> &s, Functor f, then_launch policy ) {
+        inline decltype( auto ) then( std::promise<T> &s, Functor f, then_launch policy ) {
             return then( s.get_future(), f, policy );
         };
 
@@ -505,16 +448,47 @@ namespace thenable {
         };
 
         template <typename T>
-        struct get_future_type<future<T>> {
+        struct get_future_type<std::future<T>> {
             typedef T type;
         };
 
         template <typename T>
-        struct get_future_type<shared_future<T>> {
+        struct get_future_type<std::shared_future<T>> {
             typedef T type;
         };
 
         //////////
+
+        template <typename T>
+        class ThenablePromise : public std::promise<T> {
+            public:
+                inline ThenablePromise() : std::promise<T>() {}
+
+                inline ThenablePromise( std::promise<T> &&p ) : std::promise<T>( std::forward<std::promise<T>>( p )) {}
+
+                inline ThenablePromise( ThenablePromise &&p ) : std::promise<T>( std::forward<std::promise<T>>( p )) {}
+
+                ThenablePromise( const ThenablePromise & ) = delete;
+
+                ThenablePromise &operator=( const ThenablePromise & ) = delete;
+
+                inline operator std::promise<T> &() noexcept {
+                    return *static_cast<std::promise<T> *>(this);
+                }
+
+                inline operator std::promise<T> &&() noexcept {
+                    return std::move( *static_cast<std::promise<T> *>(this));
+                }
+
+                inline ThenableFuture<T> get_thenable_future() {
+                    return this->get_future(); //Automatically converts it
+                }
+
+                template <typename... Args>
+                inline decltype( auto ) then( Args &&... args ) {
+                    return then2( this->get_future(), std::forward<Args>( args )... );
+                }
+        };
 
         /*
          * This is a future object functionally equivalent to std::future,
@@ -522,13 +496,13 @@ namespace thenable {
          * */
 
         template <typename T>
-        class ThenableFuture : public future<T> {
+        class ThenableFuture : public std::future<T> {
             public:
-                constexpr ThenableFuture() noexcept : future<T>() {}
+                constexpr ThenableFuture() noexcept : std::future<T>() {}
 
-                inline ThenableFuture( future<T> &&f ) noexcept : future<T>( move( f )) {}
+                inline ThenableFuture( std::future<T> &&f ) noexcept : std::future<T>( std::forward<std::future<T>>( f )) {}
 
-                inline ThenableFuture( ThenableFuture &&f ) noexcept : future<T>( move( f )) {}
+                inline ThenableFuture( ThenableFuture &&f ) noexcept : std::future<T>( std::forward<std::future<T>>( f )) {}
 
                 /*
                  * These need to be deleted so that the compiler doesn't just use the defaults
@@ -541,18 +515,18 @@ namespace thenable {
                 /*
                  * These operator overloads allow ThenableFuture to be used as a normal future rather easily
                  * */
-                inline operator future<T> &() {
-                    return *static_cast<future <T> *>(this);
+                inline operator std::future<T> &() {
+                    return *static_cast<std::future<T> *>(this);
                 }
 
-                inline operator future<T> &&() {
-                    return move( *static_cast<future <T> *>(this));
+                inline operator std::future<T> &&() {
+                    return std::move( *static_cast<std::future<T> *>(this));
                 }
 
                 template <typename... Args>
                 inline decltype( auto ) then( Args &&... args ) {
                     //NOTE: if `then` is used instead of `then2`, the namespace should be explicitly given, or this function will recurse
-                    return then2( move( *this ), std::forward<Args>( args )... );
+                    return then2( std::move( *this ), std::forward<Args>( args )... );
                 }
 
                 inline ThenableSharedFuture<T> shared_thenable() {
@@ -561,21 +535,21 @@ namespace thenable {
         };
 
         template <typename T>
-        class ThenableSharedFuture : public shared_future<T> {
+        class ThenableSharedFuture : public std::shared_future<T> {
             public:
-                constexpr ThenableSharedFuture() noexcept : shared_future<T>() {}
+                constexpr ThenableSharedFuture() noexcept : std::shared_future<T>() {}
 
-                inline ThenableSharedFuture( const shared_future<T> &f ) noexcept : shared_future<T>( f ) {}
+                inline ThenableSharedFuture( const std::shared_future<T> &f ) noexcept : std::shared_future<T>( f ) {}
 
-                inline ThenableSharedFuture( const ThenableSharedFuture &f ) noexcept : shared_future<T>( f ) {}
+                inline ThenableSharedFuture( const ThenableSharedFuture &f ) noexcept : std::shared_future<T>( f ) {}
 
-                inline ThenableSharedFuture( future<T> &&f ) noexcept : shared_future<T>( move( f )) {}
+                inline ThenableSharedFuture( std::future<T> &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-                inline ThenableSharedFuture( ThenableFuture<T> &&f ) noexcept : shared_future<T>( move( f )) {}
+                inline ThenableSharedFuture( ThenableFuture<T> &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-                inline ThenableSharedFuture( shared_future<T> &&f ) noexcept : shared_future<T>( move( f )) {}
+                inline ThenableSharedFuture( std::shared_future<T> &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-                inline ThenableSharedFuture( ThenableSharedFuture &&f ) noexcept : shared_future<T>( move( f )) {}
+                inline ThenableSharedFuture( ThenableSharedFuture &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
                 /*
                  * Assignment operator doesn't need to be overloaded here because it'll just cast *this to shared_future<T>
@@ -585,12 +559,12 @@ namespace thenable {
                 /*
                  * These operator overloads allow ThenableSharedFuture to be used as a normal shared_future rather easily
                  * */
-                inline operator shared_future<T> &() {
-                    return *static_cast<shared_future <T> *>(this);
+                inline operator std::shared_future<T> &() {
+                    return *static_cast<std::shared_future<T> *>(this);
                 }
 
-                inline operator shared_future<T> &&() {
-                    return move( *static_cast<shared_future <T> *>(this));
+                inline operator std::shared_future<T> &&() {
+                    return std::move( *static_cast<std::shared_future<T> *>(this));
                 }
 
                 template <typename... Args>
@@ -603,35 +577,81 @@ namespace thenable {
         //////////
 
         /*
+         * recursive_get implementations for ThenableX classes
+         * */
+
+        template <typename T>
+        inline decltype( auto ) recursive_get( ThenableFuture<T> &&t ) {
+            return recursive_get( t.get());
+        };
+
+        template <typename T>
+        inline decltype( auto ) recursive_get( ThenableSharedFuture<T> &&t ) {
+            return recursive_get( t.get());
+        };
+
+        template <typename T>
+        inline decltype( auto ) recursive_get( ThenablePromise<T> &&t ) {
+            return recursive_get( t.get_future());
+        };
+
+        //////////
+
+        /*
          * then2 is a variation of then that returns a ThenableFuture instead of a normal future
          * */
         template <typename... Args>
         inline decltype( auto ) then2( Args &&... args ) {
             auto &&k = then( std::forward<Args>( args )... );
 
-            return ThenableFuture<typename get_future_type<typename remove_reference<decltype( k )>::type>::type>( move( k ));
+            typedef typename std::remove_reference<decltype( k )>::type K;
+
+            return ThenableFuture<typename get_future_type<K>::type>( std::forward<K>( k ));
+        }
+
+        //////////
+
+        /*
+         * These just convert future, shared_future and promise to their Thenable equivalent
+         * */
+
+        template <typename T>
+        inline ThenableFuture<T> to_thenable( std::future<T> &&t ) {
+            return ThenableFuture<T>( std::forward<std::future<T>>( t ));
         }
 
         template <typename T>
-        inline ThenableFuture<T> to_thenable( future<T> &&t ) {
-            return ThenableFuture<T>( move( t ));
-        }
-
-        template <typename T>
-        inline ThenableSharedFuture<T> to_thenable( shared_future<T> t ) {
+        inline ThenableSharedFuture<T> to_thenable( std::shared_future<T> t ) {
             return ThenableSharedFuture<T>( t );
+        }
+
+        template <typename T>
+        inline ThenablePromise<T> to_thenable( std::promise<T> &&t ) {
+            return ThenablePromise<T>( std::forward<std::promise<T>>( t ));
         }
     }
 
     using detail::then;
     using detail::then2;
 
+    using detail::ThenablePromise;
     using detail::ThenableFuture;
     using detail::ThenableSharedFuture;
 
     using detail::to_thenable;
 
     using detail::then_launch;
+
+    namespace std_future {
+        template <typename T>
+        using promise = ThenablePromise<T>;
+
+        template <typename T>
+        using future = ThenableFuture<T>;
+
+        template <typename T>
+        using shared_future = ThenableSharedFuture<T>;
+    }
 }
 
 #endif //THENABLE_IMPLEMENTATION_HPP
