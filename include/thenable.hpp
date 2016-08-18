@@ -48,6 +48,18 @@ namespace thenable {
         //////////
 
         /*
+         * Forward declarations for thenable classes
+         * */
+
+        template <typename>
+        class ThenableFuture;
+
+        template <typename>
+        class ThenableSharedFuture;
+
+        //////////
+
+        /*
          * Forward declarations and default arguments for standard then overloads
          * */
 
@@ -86,8 +98,24 @@ namespace thenable {
 
         //////////
 
+        /*
+         * Forward declaration for then2, which returns a ThenableFuture instead of a std::future
+         * */
+
         template <typename... Args>
-        decltype( auto ) then2( Args&&... );
+        decltype( auto ) then2( Args &&... );
+
+        //////////
+
+        /*
+         * Forward declaration for to_thenable, which converts a future or shared_future into a ThenableFuture or ThenableSharedFuture
+         * */
+
+        template <typename T>
+        inline ThenableFuture<T> to_thenable( future<T> && );
+
+        template <typename T>
+        inline ThenableSharedFuture<T> to_thenable( shared_future<T> );
 
         //////////
 
@@ -220,7 +248,7 @@ namespace thenable {
         template <typename Functor, typename R = fn_result_of<Functor>>
         struct then_invoke_helper {
             template <typename... Args>
-            inline static decltype( auto ) invoke( Functor f, Args&&... args ) {
+            inline static decltype( auto ) invoke( Functor f, Args &&... args ) {
                 return optional_get<R>::get( f( forward<Args>( args )... ));
             }
         };
@@ -231,7 +259,7 @@ namespace thenable {
         template <typename Functor>
         struct then_invoke_helper<Functor, void> {
             template <typename... Args>
-            inline static void invoke( Functor f, Args&&... args ) {
+            inline static void invoke( Functor f, Args &&... args ) {
                 f( forward<Args>( args )... );
             }
         };
@@ -481,6 +509,11 @@ namespace thenable {
             typedef T type;
         };
 
+        template <typename T>
+        struct get_future_type<shared_future<T>> {
+            typedef T type;
+        };
+
         //////////
 
         /*
@@ -496,6 +529,10 @@ namespace thenable {
                 inline ThenableFuture( future<T> &&f ) noexcept : future<T>( move( f )) {}
 
                 inline ThenableFuture( ThenableFuture &&f ) noexcept : future<T>( move( f )) {}
+
+                /*
+                 * These need to be deleted so that the compiler doesn't just use the defaults
+                 * */
 
                 ThenableFuture( const ThenableFuture & ) = delete;
 
@@ -513,9 +550,53 @@ namespace thenable {
                 }
 
                 template <typename... Args>
-                inline decltype( auto ) then( Args&&... args ) {
+                inline decltype( auto ) then( Args &&... args ) {
                     //NOTE: if `then` is used instead of `then2`, the namespace should be explicitly given, or this function will recurse
                     return then2( move( *this ), std::forward<Args>( args )... );
+                }
+
+                inline ThenableSharedFuture<T> shared_thenable() {
+                    return ThenableSharedFuture<T>( this->share());
+                }
+        };
+
+        template <typename T>
+        class ThenableSharedFuture : public shared_future<T> {
+            public:
+                constexpr ThenableSharedFuture() noexcept : shared_future<T>() {}
+
+                inline ThenableSharedFuture( const shared_future<T> &f ) noexcept : shared_future<T>( f ) {}
+
+                inline ThenableSharedFuture( const ThenableSharedFuture &f ) noexcept : shared_future<T>( f ) {}
+
+                inline ThenableSharedFuture( future<T> &&f ) noexcept : shared_future<T>( move( f )) {}
+
+                inline ThenableSharedFuture( ThenableFuture<T> &&f ) noexcept : shared_future<T>( move( f )) {}
+
+                inline ThenableSharedFuture( shared_future<T> &&f ) noexcept : shared_future<T>( move( f )) {}
+
+                inline ThenableSharedFuture( ThenableSharedFuture &&f ) noexcept : shared_future<T>( move( f )) {}
+
+                /*
+                 * Assignment operator doesn't need to be overloaded here because it'll just cast *this to shared_future<T>
+                 * and use shared_future<T>'s assignment operator
+                 * */
+
+                /*
+                 * These operator overloads allow ThenableSharedFuture to be used as a normal shared_future rather easily
+                 * */
+                inline operator shared_future<T> &() {
+                    return *static_cast<shared_future <T> *>(this);
+                }
+
+                inline operator shared_future<T> &&() {
+                    return move( *static_cast<shared_future <T> *>(this));
+                }
+
+                template <typename... Args>
+                inline decltype( auto ) then( Args &&... args ) {
+                    //NOTE: if `then` is used instead of `then2`, the namespace should be explicitly given, or this function will recurse
+                    return then2( *this, std::forward<Args>( args )... );
                 }
         };
 
@@ -525,16 +606,31 @@ namespace thenable {
          * then2 is a variation of then that returns a ThenableFuture instead of a normal future
          * */
         template <typename... Args>
-        inline decltype( auto ) then2( Args&&... args ) {
+        inline decltype( auto ) then2( Args &&... args ) {
             auto &&k = then( std::forward<Args>( args )... );
 
             return ThenableFuture<typename get_future_type<typename remove_reference<decltype( k )>::type>::type>( move( k ));
+        }
+
+        template <typename T>
+        inline ThenableFuture<T> to_thenable( future<T> &&t ) {
+            return ThenableFuture<T>( move( t ));
+        }
+
+        template <typename T>
+        inline ThenableSharedFuture<T> to_thenable( shared_future<T> t ) {
+            return ThenableSharedFuture<T>( t );
         }
     }
 
     using detail::then;
     using detail::then2;
+
     using detail::ThenableFuture;
+    using detail::ThenableSharedFuture;
+
+    using detail::to_thenable;
+
     using detail::then_launch;
 }
 
