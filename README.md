@@ -39,6 +39,18 @@ int main() {
 
 The above example waits for `f` to resolve in a separate thread, while p is set in another thread after one second.
 
+## Dependencies
+
+This project relies on files from my `function_traits` project located here: [function_traits](https://github.com/novacrazy/function_traits).
+
+Clone the repo or download a ZIP of it and add the `'include'` directory to your build system.
+
+For example, to add it to `CMakeLists.txt` you would do this:
+
+```
+include_directories(SYSTEM "/path/to/function_traits/include")
+```
+
 ## API
 
 Coming soon.
