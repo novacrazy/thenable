@@ -70,7 +70,11 @@ Clone the repo or download a ZIP of it and add the `'include'` directory to your
 For example, to add it to `CMakeLists.txt` you would do this:
 
 ```
-include_directories(SYSTEM "/path/to/function_traits/include")
+include_directories(
+    SYSTEM
+    "/path/to/function_traits/include"
+    "/path/to/thenable/include"
+)
 ```
 
 ## API
