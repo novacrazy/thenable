@@ -29,7 +29,11 @@ namespace thenable {
          * The default launch policy of std::async is a combination of the std::launch flags,
          * allowing it to choose whatever policy it wants depending on the system.
          * */
+#ifdef THENABLE_DEFAULT_POLICY
+        constexpr std::launch default_policy = THENABLE_DEFAULT_POLICY;
+#else
         constexpr std::launch default_policy = std::launch::deferred | std::launch::async;
+#endif
 
         /*
          * This is a special launch type where it is guarenteed to spawn a new thread to run the task
