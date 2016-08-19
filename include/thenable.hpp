@@ -5,7 +5,7 @@
 #ifndef THENABLE_IMPLEMENTATION_HPP
 #define THENABLE_IMPLEMENTATION_HPP
 
-#include "function_traits.hpp"
+#include <function_traits.hpp>
 
 #include <assert.h>
 #include <future>
@@ -25,6 +25,8 @@
 
 namespace thenable {
     namespace detail {
+        using namespace fn_traits;
+
         /*
          * The default launch policy of std::async is a combination of the std::launch flags,
          * allowing it to choose whatever policy it wants depending on the system.
