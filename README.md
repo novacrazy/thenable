@@ -16,28 +16,50 @@ using namespace std;
 using namespace thenable;
 
 int main() {
-    promise<int> p;
+    ThenablePromise<int> p, k;
 
-    ThenableFuture<int> f = p.get_future();
+    cout << "Starting asynchronous tasks on thread: " << this_thread::get_id() << endl;
 
-    f.then( []( int i ) {
+    p.then( [&k]( int i ) {
         assert( i == 10 );
 
-        cout << "Hello, World!" << endl;
+        cout << "Hello, World! from thread: " << this_thread::get_id() << endl;
+
+        k.set_value( 421 );
+
+        return k.get_future();
+
+    } ).then( []( int i ) {
+        assert( i = 421 );
+
+        cout << "Hello, again! from thread: " << this_thread::get_id() << endl;
+
     }, then_launch::detached );
 
+    //Launch a new thread to resolve the original promise.
     thread( [&p] {
-        this_thread::sleep_for( 1s );
+        cout << "Resolving promise on thread: " << this_thread::get_id() << endl;
 
         p.set_value( 10 );
     } ).join();
+
+    //Just to keep the program alive long enough for the promises/futures to propagate.
+    this_thread::sleep_for( 10s );
 
     return 0;
 }
 
 ```
 
-The above example waits for `f` to resolve in a separate thread, while p is set in another thread after one second.
+The output of the above will be something like:
+```
+Starting asynchronous tasks on thread: 1
+Resolving promise on thread: 4
+Hello, World! from thread: 2
+Hello, again! from thread: 3
+```
+
+If `THENABLE_DEFAULT_POLICY` is set to `std::launch::deferred`, then the last two actions will be performed on the same thread.
 
 ## Dependencies
 
