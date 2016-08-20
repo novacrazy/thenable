@@ -13,8 +13,10 @@
 
 #ifndef DOXYGEN_DEFINE
 #define THENABLE_DECLTYPE_AUTO decltype(auto)
+#define THENABLE_DECLTYPE_AUTO_HINTED( hint ) THENABLE_DECLTYPE_AUTO
 #else
 #define THENABLE_DECLTYPE_AUTO auto
+#define THENABLE_DECLTYPE_AUTO_HINTED( hint ) hint<THENABLE_DECLTYPE_AUTO>
 #endif
 
 /*
@@ -74,19 +76,19 @@ namespace thenable {
      * */
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::future<T> &, Functor &&, std::launch = default_policy );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &, Functor &&, std::launch = default_policy );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::shared_future<T> &&, Functor &&, std::launch = default_policy );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> &&, Functor &&, std::launch = default_policy );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::shared_future<T>, Functor &&, std::launch = default_policy );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T>, Functor &&, std::launch = default_policy );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::future<T> &&, Functor &&, std::launch = default_policy );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &&, Functor &&, std::launch = default_policy );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::promise<T> &, Functor &&, std::launch = default_policy );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::promise<T> &, Functor &&, std::launch = default_policy );
 
     //////////
 
@@ -98,19 +100,19 @@ namespace thenable {
      * */
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::future<T> &, Functor &&, then_launch );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &, Functor &&, then_launch );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::shared_future<T> &&, Functor &&, then_launch );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> &&, Functor &&, then_launch );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::shared_future<T>, Functor &&, then_launch );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T>, Functor &&, then_launch );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::future<T> &&, Functor &&, then_launch );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &&, Functor &&, then_launch );
 
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::promise<T> &, Functor &&, then_launch );
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::promise<T> &, Functor &&, then_launch );
 
     //////////
 
@@ -119,7 +121,7 @@ namespace thenable {
      * */
 
     template <typename... Args>
-    THENABLE_DECLTYPE_AUTO then2( Args &&... );
+    THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( Args &&... );
 
     //////////
 
@@ -359,7 +361,7 @@ namespace thenable {
      * Overload for simple futures
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::future<T> &&s, Functor &&f, std::launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &&s, Functor &&f, std::launch policy ) {
         return std::async( policy, [policy]( std::future<T> &&s2, Functor &&f2 ) {
             return detail::then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s2 ), std::forward<Functor>( f2 ));
         }, std::forward<std::future<T>>( s ), std::forward<Functor>( f ));
@@ -370,7 +372,7 @@ namespace thenable {
      * calling the above overload.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::future<T> &s, Functor &&f, std::launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &s, Functor &&f, std::launch policy ) {
         return then( std::forward<std::future<T>>( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -379,14 +381,14 @@ namespace thenable {
      * It's similar to the first overload, but can capture the shared_future in the lambda.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::shared_future<T> &&s, Functor &&f, std::launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> &&s, Functor &&f, std::launch policy ) {
         return std::async( policy, [policy]( std::shared_future<T> &&s2, Functor &&f2 ) {
             return detail::then_helper<T, Functor>::dispatch( std::forward<std::shared_future<T>>( s2 ), std::forward<Functor>( f2 ));
         }, std::forward<std::shared_future<T>>( s ), std::forward<Functor>( f ));
     };
 
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::shared_future<T> s, Functor &&f, std::launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> s, Functor &&f, std::launch policy ) {
         return then( std::move( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -395,7 +397,7 @@ namespace thenable {
      * from it and the promise is left intact, so it can be used elsewhere.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::promise<T> &s, Functor &&f, std::launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::promise<T> &s, Functor &&f, std::launch policy ) {
         return then( s.get_future(), std::forward<Functor>( f ), policy );
     };
 
@@ -412,7 +414,7 @@ namespace thenable {
      * Overload for simple futures
      * */
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::future<T> &&s, Functor &&f, then_launch policy ) {
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &&s, Functor &&f, then_launch policy ) {
         //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
         typedef decltype( detail::then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s ), std::forward<Functor>( f ))) P;
 
@@ -436,7 +438,7 @@ namespace thenable {
      * calling the above overload.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::future<T> &s, Functor &&f, then_launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &s, Functor &&f, then_launch policy ) {
         return then( std::move( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -445,7 +447,7 @@ namespace thenable {
      * It's similar to the first overload, but can capture the shared_future in the lambda.
      * */
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO then( std::shared_future<T> &&s, Functor &&f, then_launch policy ) {
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> &&s, Functor &&f, then_launch policy ) {
         //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
         typedef decltype( detail::then_helper<T, Functor>::dispatch( std::forward<std::shared_future<T>>( s ), std::forward<Functor>( f ))) P;
 
@@ -465,7 +467,7 @@ namespace thenable {
     };
 
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::shared_future<T> s, Functor &&f, then_launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> s, Functor &&f, then_launch policy ) {
         return then( std::move( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -474,7 +476,7 @@ namespace thenable {
      * from it and the promise is left intact, so it can be used elsewhere.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO then( std::promise<T> &s, Functor &&f, then_launch policy ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::promise<T> &s, Functor &&f, then_launch policy ) {
         return then( s.get_future(), std::forward<Functor>( f ), policy );
     };
 
@@ -506,7 +508,7 @@ namespace thenable {
             }
 
             template <typename... Args>
-            inline THENABLE_DECLTYPE_AUTO then( Args &&... args ) {
+            inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then( Args &&... args ) {
                 return then2( this->get_future(), std::forward<Args>( args )... );
             }
     };
@@ -545,7 +547,7 @@ namespace thenable {
             }
 
             template <typename... Args>
-            inline THENABLE_DECLTYPE_AUTO then( Args &&... args ) {
+            inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then( Args &&... args ) {
                 //NOTE: if `then` is used instead of `then2`, the namespace should be explicitly given, or this function will recurse
                 return then2( std::move( *this ), std::forward<Args>( args )... );
             }
@@ -589,7 +591,7 @@ namespace thenable {
             }
 
             template <typename... Args>
-            inline THENABLE_DECLTYPE_AUTO then( Args &&... args ) {
+            inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then( Args &&... args ) {
                 //NOTE: if `then` is used instead of `then2`, the namespace should be explicitly given, or this function will recurse
                 return then2( *this, std::forward<Args>( args )... );
             }
@@ -634,7 +636,7 @@ namespace thenable {
      * then2 is a variation of then that returns a ThenableFuture instead of a normal future
      * */
     template <typename... Args>
-    inline THENABLE_DECLTYPE_AUTO then2( Args &&... args ) {
+    inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( Args &&... args ) {
         return to_thenable( then( std::forward<Args>( args )... ));
     }
 
@@ -668,7 +670,7 @@ namespace thenable {
 
     namespace detail {
         template <typename T>
-        struct promisify_helper {
+        struct make_promise_helper {
             template <typename Functor>
             inline static void dispatch( Functor &&f, const std::shared_ptr<std::promise<T>> &p ) noexcept {
                 try {
@@ -686,7 +688,7 @@ namespace thenable {
         };
 
         template <>
-        struct promisify_helper<void> {
+        struct make_promise_helper<void> {
             template <typename Functor>
             inline static void dispatch( Functor &&f, const std::shared_ptr<std::promise<void>> &p ) noexcept {
                 try {
@@ -705,11 +707,11 @@ namespace thenable {
     }
 
     template <typename T = void, typename Functor, typename... Args>
-    THENABLE_DECLTYPE_AUTO make_promise( Functor &&f, Args &&... args ) {
+    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) make_promise( Functor &&f, Args &&... args ) {
         auto p = std::make_shared<std::promise<T>>();
 
         return then( std::async( std::launch::deferred, [p]( Functor &&f2 ) noexcept {
-            detail::promisify_helper<T>::dispatch( std::forward<Functor>( f2 ), p );
+            detail::make_promise_helper<T>::dispatch( std::forward<Functor>( f2 ), p );
 
         }, std::forward<Functor>( f )), [p] {
             return p->get_future();
@@ -718,11 +720,11 @@ namespace thenable {
     }
 
     template <typename T = void, typename Functor, typename... Args>
-    THENABLE_DECLTYPE_AUTO make_promise2( Functor &&f, Args &&... args ) {
+    THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) make_promise2( Functor &&f, Args &&... args ) {
         auto p = std::make_shared<std::promise<T>>();
 
         return then2( std::async( std::launch::deferred, [p]( Functor &&f2 ) noexcept {
-            detail::promisify_helper<T>::dispatch( std::forward<Functor>( f2 ), p );
+            detail::make_promise_helper<T>::dispatch( std::forward<Functor>( f2 ), p );
 
         }, std::forward<Functor>( f )), [p] {
             return p->get_future();
