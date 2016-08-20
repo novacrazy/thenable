@@ -705,7 +705,7 @@ namespace thenable {
     }
 
     template <typename T = void, typename Functor, typename... Args>
-    THENABLE_DECLTYPE_AUTO promisify( Functor &&f, Args &&... args ) {
+    THENABLE_DECLTYPE_AUTO make_promise( Functor &&f, Args &&... args ) {
         auto p = std::make_shared<std::promise<T>>();
 
         return then( std::async( std::launch::deferred, [p]( Functor &&f2 ) noexcept {
@@ -718,7 +718,7 @@ namespace thenable {
     }
 
     template <typename T = void, typename Functor, typename... Args>
-    THENABLE_DECLTYPE_AUTO promisify2( Functor &&f, Args &&... args ) {
+    THENABLE_DECLTYPE_AUTO make_promise2( Functor &&f, Args &&... args ) {
         auto p = std::make_shared<std::promise<T>>();
 
         return then2( std::async( std::launch::deferred, [p]( Functor &&f2 ) noexcept {
