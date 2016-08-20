@@ -127,6 +127,9 @@ namespace thenable {
     template <typename T>
     inline ThenableSharedFuture<T> to_thenable( std::shared_future<T> );
 
+    template <typename T>
+    inline ThenablePromise<T> to_thenable( std::promise<T> && );
+
     namespace detail {
         using namespace fn_traits;
 
@@ -160,7 +163,7 @@ namespace thenable {
         THENABLE_DECLTYPE_AUTO recursive_get( ThenablePromise<T> && );
 
         template <typename T>
-        T recursive_get( T && );
+        T recursive_get( T && ) noexcept;
 
         /*
          * std future implementations. ThenableX implementations are below their class implementation at the bottom of the file.
@@ -176,6 +179,16 @@ namespace thenable {
             return recursive_get( t.get());
         };
 
+        template <>
+        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( std::future<void> &&t ) {
+            t.get();
+        };
+
+        template <>
+        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( std::shared_future<void> &&t ) {
+            t.get();
+        };
+
         template <typename T>
         inline THENABLE_DECLTYPE_AUTO recursive_get( std::promise<T> &&t ) {
             return recursive_get( t.get_future());
@@ -185,7 +198,7 @@ namespace thenable {
          * This just forwards anything that is NOT a promise or future and doesn't do anything to it.
          * */
         template <typename T>
-        inline T recursive_get( T &&t ) {
+        inline T recursive_get( T &&t ) noexcept {
             return std::forward<T>( t );
         };
 
@@ -601,6 +614,16 @@ namespace thenable {
             return recursive_get( t.get());
         };
 
+        template <>
+        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( ThenableFuture<void> &&t ) {
+            t.get();
+        };
+
+        template <>
+        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( ThenableSharedFuture<void> &&t ) {
+            t.get();
+        };
+
         template <typename T>
         inline THENABLE_DECLTYPE_AUTO recursive_get( ThenablePromise<T> &&t ) {
             return recursive_get( t.get_future());
@@ -641,6 +664,72 @@ namespace thenable {
     inline ThenablePromise<T> to_thenable( std::promise<T> &&t ) {
         return ThenablePromise<T>( std::forward<std::promise<T>>( t ));
     }
+
+    //////////
+
+    namespace detail {
+        template <typename T>
+        struct promisify_helper {
+            template <typename Functor>
+            inline static void dispatch( Functor f, const std::shared_ptr<std::promise<T>> &p ) {
+                try {
+                    f( [p]( const T &resolved_value ) {
+                        p->set_value( resolved_value );
+
+                    }, [p]( auto rejected_value ) {
+                        p->set_exception( std::make_exception_ptr( rejected_value ));
+                    } );
+
+                } catch( ... ) {
+                    p->set_exception( std::current_exception());
+                }
+            }
+        };
+
+        template <>
+        struct promisify_helper<void> {
+            template <typename Functor>
+            inline static void dispatch( Functor f, const std::shared_ptr<std::promise<void>> &p ) {
+                try {
+                    f( [p] {
+                        p->set_value();
+
+                    }, [p]( auto rejected_value ) {
+                        p->set_exception( std::make_exception_ptr( rejected_value ));
+                    } );
+
+                } catch( ... ) {
+                    p->set_exception( std::current_exception());
+                }
+            }
+        };
+    }
+
+    template <typename T = void, typename Functor, typename... Args>
+    inline THENABLE_DECLTYPE_AUTO promisify( Functor f, Args... args ) {
+        auto p = std::make_shared<std::promise<T>>();
+
+        return then( std::async( std::launch::deferred, [f, p]() noexcept {
+            detail::promisify_helper<T>::dispatch( f, p );
+
+        }, std::forward<Args>( args )... ), [p] {
+            return p->get_future();
+        } );
+    }
+
+    template <typename T = void, typename Functor, typename... Args>
+    inline THENABLE_DECLTYPE_AUTO promisify2( Functor f, Args... args ) {
+        auto p = std::make_shared<std::promise<T>>();
+
+        return then2( std::async( std::launch::deferred, [f, p]() noexcept {
+            detail::promisify_helper<T>::dispatch( f, p );
+
+        }, std::forward<Args>( args )... ), [p] {
+            return p->get_future();
+        } );
+    }
+
+    //////////
 
     namespace std_future {
         template <typename T>
