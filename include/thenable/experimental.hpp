@@ -151,24 +151,59 @@ namespace thenable {
 
         //////////
 
-        template <typename... Results>
-        inline std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results ) {
-
+        namespace detail {
+            template <typename K, typename T, std::size_t... S>
+            inline K get_tuple_futures( T &&t, std::index_sequence<S...> ) {
+                return K( std::get<S>( std::forward<T>( t )).get()... );
+            }
         }
 
         template <typename... Results>
-        inline std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results ) {
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<std::future<Results>...> &&results, std::launch policy = default_policy ) {
+            typedef std::tuple<std::future<Results>...> tuple_type;
 
+            return std::async( policy, [policy]( tuple_type &&inner_results ) {
+                constexpr auto Size = std::tuple_size<tuple_type>::value;
+
+                return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
+            }, std::forward<tuple_type>( results ));
         }
 
         template <typename... Results>
-        inline std::future<std::tuple<Results...>> await_all( std::tuple<::thenable::ThenableFuture<Results>...> &&results ) {
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy = default_policy ) {
+            typedef std::tuple<std::shared_future<Results>...> tuple_type;
 
+            return std::async( policy, [policy]( tuple_type &&inner_results ) {
+                constexpr auto Size = std::tuple_size<tuple_type>::value;
+
+                return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
+            }, std::forward<tuple_type>( results ));
         }
 
         template <typename... Results>
-        inline std::future<std::tuple<Results...>> await_all( std::tuple<::thenable::ThenableSharedFuture<Results>...> &&results ) {
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<::thenable::ThenableFuture<Results>...> &&results, std::launch policy = default_policy ) {
+            typedef std::tuple<::thenable::ThenableFuture<Results>...> tuple_type;
 
+            return std::async( policy, [policy]( tuple_type &&inner_results ) {
+                constexpr auto Size = std::tuple_size<tuple_type>::value;
+
+                return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
+            }, std::forward<tuple_type>( results ));
+        }
+
+        template <typename... Results>
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<::thenable::ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy ) {
+            typedef std::tuple<::thenable::ThenableSharedFuture<Results>...> tuple_type;
+
+            return std::async( policy, [policy]( tuple_type &&inner_results ) {
+                constexpr auto Size = std::tuple_size<tuple_type>::value;
+
+                return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
+            }, std::forward<tuple_type>( results ));
         }
     }
 }
