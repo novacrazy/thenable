@@ -10,6 +10,7 @@
 #include <function_traits.hpp>
 #include <assert.h>
 #include <memory>
+#include <thread>
 
 /*
  * The `then` function implemented below is designed to be very similar to JavaScript's Promise.then in functionality.
@@ -69,7 +70,7 @@ namespace thenable {
         THENABLE_DECLTYPE_AUTO recursive_get( ThenablePromise<T> && );
 
         template <typename T>
-        constexpr T recursive_get( T && ) noexcept;
+        constexpr THENABLE_DECLTYPE_AUTO recursive_get( T && ) noexcept;
 
         /*
          * std future implementations. ThenableX implementations are below their class implementation at the bottom of the file.
@@ -104,7 +105,7 @@ namespace thenable {
          * This just forwards anything that is NOT a promise or future and doesn't do anything to it.
          * */
         template <typename T>
-        constexpr T recursive_get( T &&t ) noexcept {
+        constexpr THENABLE_DECLTYPE_AUTO recursive_get( T &&t ) noexcept {
             return std::forward<T>( t );
         };
 
