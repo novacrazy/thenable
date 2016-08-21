@@ -421,6 +421,11 @@ namespace thenable {
         return to_thenable( then( std::forward<FutureType>( s ), std::forward<Functor>( f ), policy ));
     }
 
+    template <typename FutureType, typename Functor, typename LaunchPolicy>
+    inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &s, Functor &&f, LaunchPolicy policy ) {
+        return to_thenable( then( s, std::forward<Functor>( f ), policy ));
+    }
+
     //////////
 
     template <typename T>

@@ -115,6 +115,9 @@ namespace thenable {
     template <typename FutureType, typename Functor, typename LaunchPolicy = std::launch>
     THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &&, Functor &&f, LaunchPolicy policy = default_policy );
 
+    template <typename FutureType, typename Functor, typename LaunchPolicy = std::launch>
+    THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &, Functor &&f, LaunchPolicy policy = default_policy );
+
     //////////
 
     /*
