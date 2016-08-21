@@ -162,10 +162,9 @@ namespace thenable {
         std::future<std::tuple<Results...>>
         await_all( std::tuple<std::future<Results>...> &&results, std::launch policy = default_policy ) {
             typedef std::tuple<std::future<Results>...> tuple_type;
+            constexpr auto                              Size = std::tuple_size<tuple_type>::value;
 
             return std::async( policy, []( tuple_type &&inner_results ) {
-                constexpr auto Size = std::tuple_size<tuple_type>::value;
-
                 return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
             }, std::forward<tuple_type>( results ));
         }
@@ -174,10 +173,9 @@ namespace thenable {
         std::future<std::tuple<Results...>>
         await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy = default_policy ) {
             typedef std::tuple<std::shared_future<Results>...> tuple_type;
+            constexpr auto                                     Size = std::tuple_size<tuple_type>::value;
 
             return std::async( policy, []( tuple_type &&inner_results ) {
-                constexpr auto Size = std::tuple_size<tuple_type>::value;
-
                 return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
             }, std::forward<tuple_type>( results ));
         }
@@ -186,10 +184,9 @@ namespace thenable {
         std::future<std::tuple<Results...>>
         await_all( std::tuple<::thenable::ThenableFuture<Results>...> &&results, std::launch policy = default_policy ) {
             typedef std::tuple<::thenable::ThenableFuture<Results>...> tuple_type;
+            constexpr auto                                             Size = std::tuple_size<tuple_type>::value;
 
             return std::async( policy, []( tuple_type &&inner_results ) {
-                constexpr auto Size = std::tuple_size<tuple_type>::value;
-
                 return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
             }, std::forward<tuple_type>( results ));
         }
@@ -198,12 +195,101 @@ namespace thenable {
         std::future<std::tuple<Results...>>
         await_all( std::tuple<::thenable::ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy ) {
             typedef std::tuple<::thenable::ThenableSharedFuture<Results>...> tuple_type;
+            constexpr auto                                                   Size = std::tuple_size<tuple_type>::value;
 
             return std::async( policy, []( tuple_type &&inner_results ) {
-                constexpr auto Size = std::tuple_size<tuple_type>::value;
-
                 return detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>());
             }, std::forward<tuple_type>( results ));
+        }
+
+        //////////
+
+        template <typename... Results>
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<std::future<Results>...> &&results, then_launch policy ) {
+            typedef std::tuple<std::future<Results>...> tuple_type;
+            constexpr auto                              Size = std::tuple_size<tuple_type>::value;
+
+            assert( policy == then_launch::detached );
+
+            auto p = std::make_shared<std::promise<std::tuple<Results...>>>();
+
+            std::thread( [p]( tuple_type &&inner_results ) {
+                try {
+                    p->set_value( detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>()));
+
+                } catch( ... ) {
+                    p->set_exception( std::current_exception());
+                }
+            }, std::forward<tuple_type>( results )).detach();
+
+            return p->get_future();
+        }
+
+        template <typename... Results>
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<std::shared_future<Results>...> &&results, then_launch policy ) {
+            typedef std::tuple<std::shared_future<Results>...> tuple_type;
+            constexpr auto                                     Size = std::tuple_size<tuple_type>::value;
+
+            assert( policy == then_launch::detached );
+
+            auto p = std::make_shared<std::promise<std::tuple<Results...>>>();
+
+            std::thread( [p]( tuple_type &&inner_results ) {
+                try {
+                    p->set_value( detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>()));
+
+                } catch( ... ) {
+                    p->set_exception( std::current_exception());
+                }
+            }, std::forward<tuple_type>( results )).detach();
+
+            return p->get_future();
+        }
+
+        template <typename... Results>
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<::thenable::ThenableFuture<Results>...> &&results, then_launch policy ) {
+            typedef std::tuple<::thenable::ThenableFuture<Results>...> tuple_type;
+            constexpr auto                                             Size = std::tuple_size<tuple_type>::value;
+
+            assert( policy == then_launch::detached );
+
+            auto p = std::make_shared<std::promise<std::tuple<Results...>>>();
+
+            std::thread( [p]( tuple_type &&inner_results ) {
+                try {
+                    p->set_value( detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>()));
+
+                } catch( ... ) {
+                    p->set_exception( std::current_exception());
+                }
+            }, std::forward<tuple_type>( results )).detach();
+
+            return p->get_future();
+        }
+
+        template <typename... Results>
+        std::future<std::tuple<Results...>>
+        await_all( std::tuple<::thenable::ThenableSharedFuture<Results>...> &&results, then_launch policy ) {
+            typedef std::tuple<::thenable::ThenableSharedFuture<Results>...> tuple_type;
+            constexpr auto                                                   Size = std::tuple_size<tuple_type>::value;
+
+            assert( policy == then_launch::detached );
+
+            auto p = std::make_shared<std::promise<std::tuple<Results...>>>();
+
+            std::thread( [p]( tuple_type &&inner_results ) {
+                try {
+                    p->set_value( detail::get_tuple_futures<std::tuple<Results...>>( std::forward<tuple_type>( inner_results ), std::make_index_sequence<Size>()));
+
+                } catch( ... ) {
+                    p->set_exception( std::current_exception());
+                }
+            }, std::forward<tuple_type>( results )).detach();
+
+            return p->get_future();
         }
     }
 }
