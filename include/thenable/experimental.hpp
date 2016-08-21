@@ -53,7 +53,7 @@ namespace thenable {
                 std::atomic_bool ran;
                 Functor          f;
 
-                tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
+                inline tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
 
                 inline void invoke( std::promise<fn_traits::fn_result_of<Functor>> &p ) noexcept {
                     try {
@@ -70,7 +70,7 @@ namespace thenable {
                 std::atomic_bool ran;
                 Functor          f;
 
-                tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
+                inline tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
 
                 inline void invoke( std::promise<void> &p ) noexcept {
                     try {
@@ -108,8 +108,9 @@ namespace thenable {
         }
 
         template <typename... Functors>
-        std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel( size_t concurrency, Functors &&... fns ) {
+        std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel_n( size_t concurrency, Functors &&... fns ) {
             static_assert( sizeof...( Functors ) > 0 );
+            assert( concurrency > 0 );
 
             typedef detail::promise_tuple<Functors...>              promise_tuple;
             typedef detail::result_tuple<Functors...>               result_tuple;
@@ -133,19 +134,19 @@ namespace thenable {
 
         template <typename... Functors>
         inline std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel( Functors &&... fns ) {
-            return parallel<Functors...>( std::thread::hardware_concurrency(), std::forward<Functors>( fns )... );
+            return parallel_n( std::thread::hardware_concurrency(), std::forward<Functors>( fns )... );
         }
 
         template <typename... Functors>
-        inline std::tuple<::thenable::ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2( size_t concurrency, Functors &&... fns ) {
+        inline std::tuple<::thenable::ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns ) {
             //Implicit conversion to ThenableFuture
-            return parallel<Functors...>( concurrency, std::forward<Functors>( fns )... );
+            return parallel_n( concurrency, std::forward<Functors>( fns )... );
         }
 
         template <typename... Functors>
         inline std::tuple<::thenable::ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2( Functors &&... fns ) {
             //Implicit conversion to ThenableFuture
-            return parallel<Functors...>( std::forward<Functors>( fns )... );
+            return parallel( std::forward<Functors>( fns )... );
         }
 
         //////////
