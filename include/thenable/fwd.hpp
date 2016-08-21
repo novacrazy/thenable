@@ -41,10 +41,6 @@ namespace thenable {
 
     //////////
 
-    /*
-     * Forward declarations for thenable classes
-     * */
-
     template <typename>
     class ThenableFuture;
 
@@ -62,10 +58,7 @@ namespace thenable {
     template <typename Functor, typename... Args>
     inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) defer2( Functor &&f, Args &&... args );
 
-
-    /*
-     * Forward declarations and default arguments for standard then overloads
-     * */
+    //////////
 
     template <typename T, typename Functor>
     THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &, Functor &&, std::launch = default_policy );
@@ -84,13 +77,6 @@ namespace thenable {
 
     //////////
 
-    /*
-     * Forward declarations (without default arguments) for detached then overloads.
-     *
-     * There are no default overloads because these will ONLY be called if the then_launch::detached
-     * flag is given, ensuring these overloads are called instead of the above.
-     * */
-
     template <typename T, typename Functor>
     THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &, Functor &&, then_launch );
 
@@ -108,10 +94,6 @@ namespace thenable {
 
     //////////
 
-    /*
-     * Forward declaration for then2, which returns a ThenableFuture instead of a std::future
-     * */
-
     template <typename FutureType, typename Functor, typename LaunchPolicy = std::launch>
     THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &&, Functor &&f, LaunchPolicy policy = default_policy );
 
@@ -119,10 +101,6 @@ namespace thenable {
     THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &, Functor &&f, LaunchPolicy policy = default_policy );
 
     //////////
-
-    /*
-     * Forward declaration for to_thenable, which converts a future or shared_future into a ThenableFuture or ThenableSharedFuture
-     * */
 
     template <typename T>
     ThenableFuture<T> to_thenable( std::future<T> && );
@@ -143,20 +121,6 @@ namespace thenable {
 
     template <typename T = void, typename Functor, typename LaunchPolicy = std::launch>
     THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) make_promise2( Functor &&, LaunchPolicy = default_policy );
-
-    //////////
-
-    template <typename... Functors>
-    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) waterfall( Functors &&..., std::launch = default_policy );
-
-    template <typename... Functors>
-    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) waterfall( Functors &&..., then_launch );
-
-    template <typename... Functors>
-    THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) waterfall2( Functors &&..., std::launch = default_policy );
-
-    template <typename... Functors>
-    THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) waterfall2( Functors &&..., then_launch );
 }
 
 #endif //THENABLE_FWD_HPP_INCLUDED

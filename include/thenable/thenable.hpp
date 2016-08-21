@@ -5,7 +5,7 @@
 #ifndef THENABLE_IMPLEMENTATION_HPP
 #define THENABLE_IMPLEMENTATION_HPP
 
-#include "thenable_fwd.hpp"
+#include <thenable/fwd.hpp>
 
 #include <function_traits.hpp>
 #include <assert.h>
@@ -473,17 +473,10 @@ namespace thenable {
 
             inline ThenableFuture( ThenableFuture &&f ) noexcept : std::future<T>( std::forward<std::future<T>>( f )) {}
 
-            /*
-             * These need to be deleted so that the compiler doesn't just use the defaults
-             * */
-
             ThenableFuture( const ThenableFuture & ) = delete;
 
             ThenableFuture &operator=( const ThenableFuture & ) = delete;
 
-            /*
-             * These operator overloads allow ThenableFuture to be used as a normal future rather easily
-             * */
             constexpr operator std::future<T> &() {
                 return *static_cast<std::future<T> *>(this);
             }
@@ -519,14 +512,6 @@ namespace thenable {
 
             inline ThenableSharedFuture( ThenableSharedFuture &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-            /*
-             * Assignment operator doesn't need to be overloaded here because it'll just cast *this to shared_future<T>
-             * and use shared_future<T>'s assignment operator
-             * */
-
-            /*
-             * These operator overloads allow ThenableSharedFuture to be used as a normal shared_future rather easily
-             * */
             constexpr operator std::shared_future<T> &() {
                 return *static_cast<std::shared_future<T> *>(this);
             }
@@ -544,10 +529,6 @@ namespace thenable {
     //////////
 
     namespace detail {
-        /*
-         * recursive_get implementations for ThenableX classes
-         * */
-
         template <typename T>
         inline THENABLE_DECLTYPE_AUTO recursive_get( ThenableFuture<T> &&t ) {
             return recursive_get( t.get());
