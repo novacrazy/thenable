@@ -121,6 +121,17 @@ namespace thenable {
 
     //////////
 
+    template <typename... Results>
+    constexpr std::tuple<ThenableFuture<Results>...> to_thenable( std::tuple<std::future<Results>...> && );
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableSharedFuture<Results>...> to_thenable( std::tuple<std::shared_future<Results>...> && );
+
+    template <typename... Results>
+    constexpr std::tuple<ThenablePromise<Results>...> to_thenable( std::tuple<std::promise<Results>...> && );
+
+    //////////
+
     template <typename T = void, typename Functor, typename LaunchPolicy = std::launch>
     THENABLE_DECLTYPE_AUTO_HINTED( std::future ) make_promise( Functor &&, LaunchPolicy = default_policy );
 
@@ -155,6 +166,12 @@ namespace thenable {
     template <typename... Results>
     ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy );
 
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, std::launch policy = default_policy );
+
     //////////
 
     template <typename... Results>
@@ -168,6 +185,12 @@ namespace thenable {
 
     template <typename... Results>
     ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, then_launch policy );
 }
 
 #endif //THENABLE_FWD_HPP_INCLUDED
