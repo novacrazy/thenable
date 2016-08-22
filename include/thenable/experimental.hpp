@@ -123,7 +123,7 @@ namespace thenable {
 
             detail::initialize_parallel_futures<0, Functors...>( result, *p );
 
-            for( size_t i = 0; i < concurrency; ++i ) {
+            for( size_t i = 0, min_concurrency = std::min( concurrency, sizeof...( Functors )); i < min_concurrency; ++i ) {
                 std::thread( [p, f]() noexcept {
                     detail::invoke_parallel_functors<0, Functors...>( *p, *f );
                 } ).detach();
@@ -154,7 +154,7 @@ namespace thenable {
         namespace detail {
             template <typename K, typename T, std::size_t... S>
             inline K get_tuple_futures( T &&t, std::index_sequence<S...> ) {
-                return K( std::get<S>( std::forward<T>( t )).get()... );
+                return K( recursive_get( std::get<S>( std::forward<T>( t )))... );
             }
         }
 
@@ -181,7 +181,7 @@ namespace thenable {
         }
 
         template <typename... Results>
-        std::future<std::tuple<Results...>>
+        ::thenable::ThenableFuture<std::tuple<Results...>>
         await_all( std::tuple<::thenable::ThenableFuture<Results>...> &&results, std::launch policy = default_policy ) {
             typedef std::tuple<::thenable::ThenableFuture<Results>...> tuple_type;
             constexpr auto                                             Size = std::tuple_size<tuple_type>::value;
@@ -192,7 +192,7 @@ namespace thenable {
         }
 
         template <typename... Results>
-        std::future<std::tuple<Results...>>
+        ::thenable::ThenableFuture<std::tuple<Results...>>
         await_all( std::tuple<::thenable::ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy ) {
             typedef std::tuple<::thenable::ThenableSharedFuture<Results>...> tuple_type;
             constexpr auto                                                   Size = std::tuple_size<tuple_type>::value;
@@ -249,7 +249,7 @@ namespace thenable {
         }
 
         template <typename... Results>
-        std::future<std::tuple<Results...>>
+        ::thenable::ThenableFuture<std::tuple<Results...>>
         await_all( std::tuple<::thenable::ThenableFuture<Results>...> &&results, then_launch policy ) {
             typedef std::tuple<::thenable::ThenableFuture<Results>...> tuple_type;
             constexpr auto                                             Size = std::tuple_size<tuple_type>::value;
@@ -271,7 +271,7 @@ namespace thenable {
         }
 
         template <typename... Results>
-        std::future<std::tuple<Results...>>
+        ::thenable::ThenableFuture<std::tuple<Results...>>
         await_all( std::tuple<::thenable::ThenableSharedFuture<Results>...> &&results, then_launch policy ) {
             typedef std::tuple<::thenable::ThenableSharedFuture<Results>...> tuple_type;
             constexpr auto                                                   Size = std::tuple_size<tuple_type>::value;
