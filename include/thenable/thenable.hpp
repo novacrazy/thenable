@@ -8,9 +8,11 @@
 #include <thenable/fwd.hpp>
 
 #include <function_traits.hpp>
+
 #include <assert.h>
 #include <memory>
 #include <thread>
+#include <tuple>
 
 /*
  * The `then` function implemented below is designed to be very similar to JavaScript's Promise.then in functionality.
@@ -39,6 +41,20 @@ namespace thenable {
 
     namespace detail {
         using namespace fn_traits;
+
+        template <typename Functor, typename T, std::size_t... S>
+        inline THENABLE_DECLTYPE_AUTO invoke_helper( Functor &&func, T &&t, std::index_sequence<S...> ) {
+            return func( std::get<S>( std::forward<T>( t ))... );
+        }
+
+        template <typename Functor, typename T>
+        inline THENABLE_DECLTYPE_AUTO invoke_tuple( Functor &&func, T &&t ) {
+            constexpr auto Size = std::tuple_size<typename std::decay<T>::type>::value;
+
+            return invoke_helper( std::forward<Functor>( func ),
+                                  std::forward<T>( t ),
+                                  std::make_index_sequence<Size>{} );
+        }
 
         /*
          * recursive_get:
@@ -70,7 +86,7 @@ namespace thenable {
         THENABLE_DECLTYPE_AUTO recursive_get( ThenablePromise<T> && );
 
         template <typename T>
-        constexpr THENABLE_DECLTYPE_AUTO recursive_get( T && ) noexcept;
+        constexpr T recursive_get( T && ) noexcept;
 
         /*
          * std future implementations. ThenableX implementations are below their class implementation at the bottom of the file.
@@ -105,7 +121,7 @@ namespace thenable {
          * This just forwards anything that is NOT a promise or future and doesn't do anything to it.
          * */
         template <typename T>
-        constexpr THENABLE_DECLTYPE_AUTO recursive_get( T &&t ) noexcept {
+        constexpr T recursive_get( T &&t ) noexcept {
             return std::forward<T>( t );
         };
 
@@ -120,13 +136,23 @@ namespace thenable {
 
         template <typename Functor, typename R = fn_result_of<Functor>>
         struct then_invoke_helper {
+            /*
+             * If you're seeing any of the code below, it's probably because a callback given to `then` doesn't
+             * have the same argument types as the value being passed from the previous future.
+             * */
+
             template <typename... Args>
-            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, Args &&... args ) {
-                /*
-                 * If you're seeing this line, it's probably because a callback given to `then` doesn't
-                 * have the same argument types as the value being passed from the previous future.
-                 * */
-                return recursive_get( f( std::forward<Args>( args )... ));
+            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, std::tuple<Args...> &&args ) {
+                return recursive_get( invoke_tuple( std::forward<Functor>( f ), std::forward<std::tuple<Args...>>( args )));
+            }
+
+            template <typename T>
+            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, T &&arg ) {
+                return recursive_get( f( std::forward<T>( arg )));
+            }
+
+            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f ) {
+                return recursive_get( f());
             }
         };
 
@@ -135,13 +161,23 @@ namespace thenable {
          * */
         template <typename Functor>
         struct then_invoke_helper<Functor, void> {
+            /*
+             * If you're seeing any of the code below, it's probably because a callback given to `then` doesn't
+             * have the same argument types as the value being passed from the previous future.
+             * */
+
             template <typename... Args>
-            inline static void invoke( Functor &&f, Args &&... args ) {
-                /*
-                 * If you're seeing this line, it's probably because a callback given to `then` doesn't
-                 * have the same argument types as the value being passed from the previous future.
-                 * */
-                f( std::forward<Args>( args )... );
+            inline static void invoke( Functor &&f, std::tuple<Args...> &&args ) {
+                return invoke_tuple( std::forward<Functor>( f ), std::forward<std::tuple<Args...>>( args ));
+            }
+
+            template <typename T>
+            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, T &&arg ) {
+                return f( std::forward<T>( arg ));
+            }
+
+            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f ) {
+                return f();
             }
         };
 
