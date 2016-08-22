@@ -5,7 +5,10 @@
 #ifndef THENABLE_FWD_HPP_INCLUDED
 #define THENABLE_FWD_HPP_INCLUDED
 
+#include <function_traits.hpp>
+
 #include <future>
+#include <tuple>
 
 #ifndef DOXYGEN_DEFINE
 #define THENABLE_DECLTYPE_AUTO decltype(auto)
@@ -123,6 +126,48 @@ namespace thenable {
 
     template <typename T = void, typename Functor, typename LaunchPolicy = std::launch>
     THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) make_promise2( Functor &&, LaunchPolicy = default_policy );
+
+    //////////
+
+    template <typename... Functors>
+    inline std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel( Functors &&... fns );
+
+    template <typename... Functors>
+    inline std::tuple<ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2( Functors &&... fns );
+
+    template <typename... Functors>
+    std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel_n( size_t concurrency, Functors &&... fns );
+
+    template <typename... Functors>
+    inline std::tuple<ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns );
+
+    //////////
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy );
+
+    //////////
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, then_launch policy );
 }
 
 #endif //THENABLE_FWD_HPP_INCLUDED
