@@ -5,9 +5,11 @@
 #ifndef THENABLE_IMPLEMENTATION_HPP
 #define THENABLE_IMPLEMENTATION_HPP
 
-#include <thenable/fwd.hpp>
+#include <function_traits.hpp>
 
 #include <assert.h>
+#include <future>
+#include <tuple>
 #include <memory>
 #include <thread>
 
@@ -24,15 +26,225 @@
  * */
 
 namespace thenable {
+    /*
+ * The default launch policy of std::async is a combination of the std::launch flags,
+ * allowing it to choose whatever policy it wants depending on the system.
+ * */
+#ifdef THENABLE_DEFAULT_POLICY
+    constexpr std::launch default_policy = THENABLE_DEFAULT_POLICY;
+#else
+    constexpr std::launch default_policy = std::launch::deferred | std::launch::async;
+#endif
+
+    /*
+     * This is a special launch type where it is guarenteed to spawn a new thread to run the task
+     * asynchronously. It will not wait on any calls to .get() on the resulting future.
+     *
+     * 4 was chosen because deferred and async are usually 1 and 2, so 4 is the next power of two,
+     * though it doesn't matter since this is a type-safe enum class anyway.
+     * */
+
+    enum class then_launch {
+            detached = 4
+    };
+
+    //////////
+
+    template <typename>
+    class ThenableFuture;
+
+    template <typename>
+    class ThenableSharedFuture;
+
+    template <typename>
+    class ThenablePromise;
+
+    namespace detail {
+        template <typename T>
+        struct recursive_get_type {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct recursive_get_type<std::future<T>> {
+            typedef typename recursive_get_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_type<std::shared_future<T>> {
+            typedef typename recursive_get_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_type<std::promise<T>> {
+            typedef typename recursive_get_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_type<ThenableFuture<T>> {
+            typedef typename recursive_get_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_type<ThenableSharedFuture<T>> {
+            typedef typename recursive_get_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_type<ThenablePromise<T>> {
+            typedef typename recursive_get_type<T>::type type;
+        };
+
+        template <typename T>
+        struct get_future_type {
+        };
+
+        template <typename T>
+        struct get_future_type<std::future<T>> {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct get_future_type<std::shared_future<T>> {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct get_future_type<std::promise<T>> {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct get_future_type<ThenableFuture<T>> {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct get_future_type<ThenableSharedFuture<T>> {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct get_future_type<ThenablePromise<T>> {
+            typedef T type;
+        };
+    }
+
+    template <typename Functor>
+    using recursive_result_of = typename detail::recursive_get_type<typename std::result_of<Functor()>::type>::type;
+
     //////////
 
     template <typename Functor, typename... Args>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) defer( Functor &&f, Args &&... args ) {
+    inline std::future<typename std::result_of<Functor( Args... )>::type> defer( Functor &&f, Args &&... args );
+
+    template <typename Functor, typename... Args>
+    inline ThenableFuture<typename std::result_of<Functor( Args... )>::type> defer2( Functor &&f, Args &&... args );
+
+    //////////
+
+
+
+    //////////
+
+    //////////
+
+    template <typename T>
+    ThenableFuture<T> to_thenable( std::future<T> && );
+
+    template <typename T>
+    ThenableSharedFuture<T> to_thenable( const std::shared_future<T> & );
+
+    template <typename T>
+    ThenableSharedFuture<T> to_thenable( std::shared_future<T> && );
+
+    template <typename T>
+    ThenablePromise<T> to_thenable( std::promise<T> && );
+
+    //////////
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableFuture<Results>...> to_thenable( std::tuple<std::future<Results>...> && );
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableSharedFuture<Results>...> to_thenable( std::tuple<std::shared_future<Results>...> && );
+
+    template <typename... Results>
+    constexpr std::tuple<ThenablePromise<Results>...> to_thenable( std::tuple<std::promise<Results>...> && );
+
+    //////////
+
+    template <typename T = void, typename Functor, typename LaunchPolicy = std::launch>
+    std::future<T> make_promise( Functor &&, LaunchPolicy = default_policy );
+
+    template <typename T = void, typename Functor, typename LaunchPolicy = std::launch>
+    ThenableFuture<T> make_promise2( Functor &&, LaunchPolicy = default_policy );
+
+
+    //////////
+
+    template <typename... Functors>
+    std::tuple<std::future<recursive_result_of<Functors>>...> parallel( Functors &&... fns );
+
+    template <typename... Functors>
+    std::tuple<ThenableFuture<recursive_result_of<Functors>>...> parallel2( Functors &&... fns );
+
+    template <typename... Functors>
+    std::tuple<std::future<recursive_result_of<Functors>>...> parallel_n( size_t concurrency, Functors &&... fns );
+
+    template <typename... Functors>
+    std::tuple<ThenableFuture<recursive_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns );
+
+    //////////
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, std::launch policy = default_policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, std::launch policy = default_policy );
+
+    //////////
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, then_launch policy );
+
+    template <typename... Results>
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, then_launch policy );
+
+
+    //////////
+
+    template <typename Functor, typename... Args>
+    inline std::future<typename std::result_of<Functor( Args... )>::type> defer( Functor &&f, Args &&... args ) {
         return std::async( std::launch::deferred, std::forward<Functor>( f ), std::forward<Args>( args )... );
     };
 
     template <typename Functor, typename... Args>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) defer2( Functor &&f, Args &&... args ) {
+    inline ThenableFuture<typename std::result_of<Functor( Args... )>::type> defer2( Functor &&f, Args &&... args ) {
         return to_thenable( defer( std::forward<Functor>( f ), std::forward<Args>( args )... ));
     };
 
@@ -40,12 +252,12 @@ namespace thenable {
         using namespace fn_traits;
 
         template <typename Functor, typename T, std::size_t... S>
-        inline THENABLE_DECLTYPE_AUTO invoke_helper( Functor &&func, T &&t, std::index_sequence<S...> ) {
+        inline decltype( auto ) invoke_helper( Functor &&func, T &&t, std::index_sequence<S...> ) {
             return func( std::get<S>( std::forward<T>( t ))... );
         }
 
         template <typename Functor, typename T>
-        inline THENABLE_DECLTYPE_AUTO invoke_tuple( Functor &&func, T &&t ) {
+        inline decltype( auto ) invoke_tuple( Functor &&func, T &&t ) {
             constexpr auto Size = std::tuple_size<typename std::decay<T>::type>::value;
 
             return invoke_helper( std::forward<Functor>( func ),
@@ -65,22 +277,22 @@ namespace thenable {
          * */
 
         template <typename T>
-        THENABLE_DECLTYPE_AUTO recursive_get( std::future<T> && );
+        typename recursive_get_type<T>::type recursive_get( std::future<T> && );
 
         template <typename T>
-        THENABLE_DECLTYPE_AUTO recursive_get( std::shared_future<T> && );
+        typename recursive_get_type<T>::type recursive_get( std::shared_future<T> && );
 
         template <typename T>
-        THENABLE_DECLTYPE_AUTO recursive_get( std::promise<T> && );
+        typename recursive_get_type<T>::type recursive_get( std::promise<T> && );
 
         template <typename T>
-        THENABLE_DECLTYPE_AUTO recursive_get( ThenableFuture<T> && );
+        typename recursive_get_type<T>::type recursive_get( ThenableFuture<T> && );
 
         template <typename T>
-        THENABLE_DECLTYPE_AUTO recursive_get( ThenableSharedFuture<T> && );
+        typename recursive_get_type<T>::type recursive_get( ThenableSharedFuture<T> && );
 
         template <typename T>
-        THENABLE_DECLTYPE_AUTO recursive_get( ThenablePromise<T> && );
+        typename recursive_get_type<T>::type recursive_get( ThenablePromise<T> && );
 
         template <typename T>
         constexpr T recursive_get( T && ) noexcept;
@@ -90,27 +302,27 @@ namespace thenable {
          * */
 
         template <typename T>
-        inline THENABLE_DECLTYPE_AUTO recursive_get( std::future<T> &&t ) {
+        inline typename recursive_get_type<T>::type recursive_get( std::future<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <typename T>
-        inline THENABLE_DECLTYPE_AUTO recursive_get( std::shared_future<T> &&t ) {
+        inline typename recursive_get_type<T>::type recursive_get( std::shared_future<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <>
-        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( std::future<void> &&t ) {
+        inline typename recursive_get_type<void>::type recursive_get<void>( std::future<void> &&t ) {
             t.get();
         };
 
         template <>
-        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( std::shared_future<void> &&t ) {
+        inline typename recursive_get_type<void>::type recursive_get<void>( std::shared_future<void> &&t ) {
             t.get();
         };
 
         template <typename T>
-        inline THENABLE_DECLTYPE_AUTO recursive_get( std::promise<T> &&t ) {
+        inline typename recursive_get_type<T>::type recursive_get( std::promise<T> &&t ) {
             return recursive_get( t.get_future());
         };
 
@@ -139,16 +351,16 @@ namespace thenable {
              * */
 
             template <typename... Args>
-            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, std::tuple<Args...> &&args ) {
+            inline static decltype( auto ) invoke( Functor &&f, std::tuple<Args...> &&args ) {
                 return recursive_get( invoke_tuple( std::forward<Functor>( f ), std::forward<std::tuple<Args...>>( args )));
             }
 
             template <typename T>
-            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, T &&arg ) {
+            inline static decltype( auto ) invoke( Functor &&f, T &&arg ) {
                 return recursive_get( f( std::forward<T>( arg )));
             }
 
-            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f ) {
+            inline static decltype( auto ) invoke( Functor &&f ) {
                 return recursive_get( f());
             }
         };
@@ -169,11 +381,11 @@ namespace thenable {
             }
 
             template <typename T>
-            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f, T &&arg ) {
+            inline static decltype( auto ) invoke( Functor &&f, T &&arg ) {
                 return f( std::forward<T>( arg ));
             }
 
-            inline static THENABLE_DECLTYPE_AUTO invoke( Functor &&f ) {
+            inline static decltype( auto ) invoke( Functor &&f ) {
                 return f();
             }
         };
@@ -189,24 +401,24 @@ namespace thenable {
 
         template <typename T, typename Functor>
         struct then_helper {
-            inline static THENABLE_DECLTYPE_AUTO dispatch( std::future<T> &&s, Functor &&f ) {
+            inline static decltype( auto ) dispatch( std::future<T> &&s, Functor &&f ) {
                 return then_invoke_helper<Functor>::invoke( std::forward<Functor>( f ), recursive_get( std::forward<std::future<T>>( s )));
             }
 
-            inline static THENABLE_DECLTYPE_AUTO dispatch( std::shared_future<T> &&s, Functor &&f ) {
+            inline static decltype( auto ) dispatch( std::shared_future<T> &&s, Functor &&f ) {
                 return then_invoke_helper<Functor>::invoke( std::forward<Functor>( f ), recursive_get( std::forward<std::shared_future<T>>( s )));
             }
         };
 
         template <typename Functor>
         struct then_helper<void, Functor> {
-            inline static THENABLE_DECLTYPE_AUTO dispatch( std::future<void> &&s, Functor &&f ) {
+            inline static decltype( auto ) dispatch( std::future<void> &&s, Functor &&f ) {
                 s.get();
 
                 return then_invoke_helper<Functor>::invoke( std::forward<Functor>( f ));
             }
 
-            inline static THENABLE_DECLTYPE_AUTO dispatch( std::shared_future<void> &&s, Functor &&f ) {
+            inline static decltype( auto ) dispatch( std::shared_future<void> &&s, Functor &&f ) {
                 s.get();
 
                 return then_invoke_helper<Functor>::invoke( std::forward<Functor>( f ));
@@ -313,7 +525,45 @@ namespace thenable {
         };
     }
 
+    //This is fun...
+    template <typename Functor, typename FutureType>
+    using implicit_result_of = decltype( detail::then_helper<typename detail::get_future_type<typename std::remove_reference<FutureType>::type>::type, Functor>::dispatch(
+        std::forward<FutureType>( std::declval<FutureType>()), std::forward<Functor>( std::declval<Functor>())));
+
     //////////
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &, Functor &&, std::launch = default_policy );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> &&, Functor &&, std::launch = default_policy );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T>, Functor &&, std::launch = default_policy );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &&, Functor &&, std::launch = default_policy );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::promise<T> &, Functor &&, std::launch = default_policy );
+
+    //////////
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &, Functor &&, then_launch );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> &&, Functor &&, then_launch );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T>, Functor &&, then_launch );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &&, Functor &&, then_launch );
+
+    template <typename T, typename Functor>
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::promise<T> &, Functor &&, then_launch );
+
 
     /*
      * then function
@@ -326,7 +576,7 @@ namespace thenable {
      * Overload for simple futures
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &&s, Functor &&f, std::launch policy ) {
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &&s, Functor &&f, std::launch policy ) {
         return std::async( policy, [policy]( std::future<T> &&s2, Functor &&f2 ) {
             return detail::then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s2 ), std::forward<Functor>( f2 ));
         }, std::forward<std::future<T>>( s ), std::forward<Functor>( f ));
@@ -337,7 +587,7 @@ namespace thenable {
      * calling the above overload.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &s, Functor &&f, std::launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &s, Functor &&f, std::launch policy ) {
         return then( std::forward<std::future<T>>( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -346,14 +596,14 @@ namespace thenable {
      * It's similar to the first overload, but can capture the shared_future in the lambda.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> &&s, Functor &&f, std::launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> &&s, Functor &&f, std::launch policy ) {
         return std::async( policy, [policy]( std::shared_future<T> &&s2, Functor &&f2 ) {
             return detail::then_helper<T, Functor>::dispatch( std::forward<std::shared_future<T>>( s2 ), std::forward<Functor>( f2 ));
         }, std::forward<std::shared_future<T>>( s ), std::forward<Functor>( f ));
     };
 
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> s, Functor &&f, std::launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> s, Functor &&f, std::launch policy ) {
         return then( std::move( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -362,7 +612,7 @@ namespace thenable {
      * from it and the promise is left intact, so it can be used elsewhere.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::promise<T> &s, Functor &&f, std::launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::future<T>>> then( std::promise<T> &s, Functor &&f, std::launch policy ) {
         return then( s.get_future(), std::forward<Functor>( f ), policy );
     };
 
@@ -379,7 +629,7 @@ namespace thenable {
      * Overload for simple futures
      * */
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &&s, Functor &&f, then_launch policy ) {
+    std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &&s, Functor &&f, then_launch policy ) {
         //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
         typedef decltype( detail::then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s ), std::forward<Functor>( f ))) P;
 
@@ -403,7 +653,7 @@ namespace thenable {
      * calling the above overload.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::future<T> &s, Functor &&f, then_launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &s, Functor &&f, then_launch policy ) {
         return then( std::move( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -412,7 +662,7 @@ namespace thenable {
      * It's similar to the first overload, but can capture the shared_future in the lambda.
      * */
     template <typename T, typename Functor>
-    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> &&s, Functor &&f, then_launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> &&s, Functor &&f, then_launch policy ) {
         //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
         typedef decltype( detail::then_helper<T, Functor>::dispatch( std::forward<std::shared_future<T>>( s ), std::forward<Functor>( f ))) P;
 
@@ -432,7 +682,7 @@ namespace thenable {
     };
 
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::shared_future<T> s, Functor &&f, then_launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> s, Functor &&f, then_launch policy ) {
         return then( std::move( s ), std::forward<Functor>( f ), policy );
     };
 
@@ -441,7 +691,7 @@ namespace thenable {
      * from it and the promise is left intact, so it can be used elsewhere.
      * */
     template <typename T, typename Functor>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( std::future ) then( std::promise<T> &s, Functor &&f, then_launch policy ) {
+    inline std::future<implicit_result_of<Functor, std::future<T>>> then( std::promise<T> &s, Functor &&f, then_launch policy ) {
         return then( s.get_future(), std::forward<Functor>( f ), policy );
     };
 
@@ -451,12 +701,12 @@ namespace thenable {
      * then2 is a variation of then that returns a ThenableFuture instead of a normal future
      * */
     template <typename FutureType, typename Functor, typename LaunchPolicy>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &&s, Functor &&f, LaunchPolicy policy ) {
+    inline ThenableFuture<implicit_result_of<Functor, FutureType>> then2( FutureType &&s, Functor &&f, LaunchPolicy policy ) {
         return to_thenable( then( std::forward<FutureType>( s ), std::forward<Functor>( f ), policy ));
     }
 
     template <typename FutureType, typename Functor, typename LaunchPolicy>
-    inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then2( FutureType &s, Functor &&f, LaunchPolicy policy ) {
+    inline ThenableFuture<implicit_result_of<Functor, FutureType>> then2( FutureType &s, Functor &&f, LaunchPolicy policy ) {
         return to_thenable( then( s, std::forward<Functor>( f ), policy ));
     }
 
@@ -488,7 +738,7 @@ namespace thenable {
             }
 
             template <typename Functor, typename LaunchPolicy = std::launch>
-            inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then( Functor &&f, LaunchPolicy policy = default_policy ) {
+            inline ThenableFuture<implicit_result_of<Functor, std::future<T>>> then( Functor &&f, LaunchPolicy policy = default_policy ) {
                 return then2( this->get_future(), std::forward<Functor>( f ), policy );
             }
     };
@@ -520,7 +770,7 @@ namespace thenable {
             }
 
             template <typename Functor, typename LaunchPolicy = std::launch>
-            inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then( Functor &&f, LaunchPolicy policy = default_policy ) {
+            inline ThenableFuture<implicit_result_of<Functor, std::future<T>>> then( Functor &&f, LaunchPolicy policy = default_policy ) {
                 return then2( std::move( *this ), std::forward<Functor>( f ), policy );
             }
 
@@ -555,7 +805,7 @@ namespace thenable {
             }
 
             template <typename Functor, typename LaunchPolicy = std::launch>
-            inline THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) then( Functor &&f, LaunchPolicy policy = default_policy ) {
+            inline ThenableFuture<implicit_result_of<Functor, std::shared_future<T>>> then( Functor &&f, LaunchPolicy policy = default_policy ) {
                 return then2( *this, std::forward<Functor>( f ), policy );
             }
     };
@@ -564,27 +814,27 @@ namespace thenable {
 
     namespace detail {
         template <typename T>
-        inline THENABLE_DECLTYPE_AUTO recursive_get( ThenableFuture<T> &&t ) {
+        inline typename recursive_get_type<T>::type recursive_get( ThenableFuture<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <typename T>
-        inline THENABLE_DECLTYPE_AUTO recursive_get( ThenableSharedFuture<T> &&t ) {
+        inline typename recursive_get_type<T>::type recursive_get( ThenableSharedFuture<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <>
-        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( ThenableFuture<void> &&t ) {
+        inline typename recursive_get_type<void>::type recursive_get<void>( ThenableFuture<void> &&t ) {
             t.get();
         };
 
         template <>
-        inline THENABLE_DECLTYPE_AUTO recursive_get<void>( ThenableSharedFuture<void> &&t ) {
+        inline typename recursive_get_type<void>::type recursive_get<void>( ThenableSharedFuture<void> &&t ) {
             t.get();
         };
 
         template <typename T>
-        inline THENABLE_DECLTYPE_AUTO recursive_get( ThenablePromise<T> &&t ) {
+        inline typename recursive_get_type<T>::type recursive_get( ThenablePromise<T> &&t ) {
             return recursive_get( t.get_future());
         };
     }
@@ -635,7 +885,7 @@ namespace thenable {
     //////////
 
     template <typename T, typename Functor, typename LaunchPolicy>
-    THENABLE_DECLTYPE_AUTO_HINTED( std::future ) make_promise( Functor &&f, LaunchPolicy policy ) {
+    std::future<T> make_promise( Functor &&f, LaunchPolicy policy ) {
         auto p = std::make_shared<std::promise<T>>();
 
         return then( defer( [p]( Functor &&f2 ) noexcept {
@@ -648,7 +898,7 @@ namespace thenable {
     }
 
     template <typename T, typename Functor, typename LaunchPolicy>
-    THENABLE_DECLTYPE_AUTO_HINTED( ThenableFuture ) make_promise2( Functor &&f, LaunchPolicy policy ) {
+    ThenableFuture<T> make_promise2( Functor &&f, LaunchPolicy policy ) {
         auto p = std::make_shared<std::promise<T>>();
 
         return then2( defer( [p]( Functor &&f2 ) noexcept {
@@ -664,10 +914,11 @@ namespace thenable {
 
     namespace detail {
         template <typename... Functors>
-        using promise_tuple = std::tuple<std::promise<fn_traits::fn_result_of<Functors>>...>;
+        using promise_tuple = std::tuple<std::promise<typename recursive_get_type<fn_traits::fn_result_of<Functors>>::type>...>;
 
         template <typename... Functors>
-        using result_tuple = std::tuple<std::future<fn_traits::fn_result_of<Functors>>...>;
+        using result_tuple = std::tuple<std::future<typename detail::recursive_get_type<fn_traits::fn_result_of<Functors>>::type>...>;
+
 
         template <size_t i, typename... Functors>
         constexpr typename std::enable_if<i == sizeof...( Functors )>::type
@@ -690,9 +941,9 @@ namespace thenable {
 
             inline tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
 
-            inline void invoke( std::promise<fn_traits::fn_result_of<Functor>> &p ) noexcept {
+            inline void invoke( std::promise<typename recursive_get_type<fn_traits::fn_result_of<Functor>>::type> &p ) noexcept {
                 try {
-                    p.set_value( f());
+                    p.set_value( recursive_get( f()));
 
                 } catch( ... ) {
                     p.set_exception( std::current_exception());
@@ -753,7 +1004,7 @@ namespace thenable {
     }
 
     template <typename... Functors>
-    std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel_n( size_t concurrency, Functors &&... fns ) {
+    std::tuple<std::future<recursive_result_of<Functors>>...> parallel_n( size_t concurrency, Functors &&... fns ) {
         static_assert( sizeof...( Functors ) > 0 );
         assert( concurrency > 0 );
 
@@ -778,18 +1029,18 @@ namespace thenable {
     }
 
     template <typename... Functors>
-    inline std::tuple<std::future<fn_traits::fn_result_of<Functors>>...> parallel( Functors &&... fns ) {
+    std::tuple<std::future<recursive_result_of<Functors>>...> parallel( Functors &&... fns ) {
         return parallel_n( std::thread::hardware_concurrency(), std::forward<Functors>( fns )... );
     }
 
     template <typename... Functors>
-    inline std::tuple<ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns ) {
+    std::tuple<ThenableFuture<recursive_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns ) {
         //Implicit conversion to ThenableFuture
         return parallel_n( concurrency, std::forward<Functors>( fns )... );
     }
 
     template <typename... Functors>
-    inline std::tuple<ThenableFuture<fn_traits::fn_result_of<Functors>>...> parallel2( Functors &&... fns ) {
+    inline std::tuple<ThenableFuture<recursive_result_of<Functors>>...> parallel2( Functors &&... fns ) {
         //Implicit conversion to ThenableFuture
         return parallel( std::forward<Functors>( fns )... );
     }
