@@ -1,0 +1,42 @@
+\hypertarget{type__traits_8hpp}{}\section{include/thenable/type\+\_\+traits.hpp File Reference}
+\label{type__traits_8hpp}\index{include/thenable/type\+\_\+traits.\+hpp@{include/thenable/type\+\_\+traits.\+hpp}}
+{\ttfamily \#include $<$function\+\_\+traits.\+hpp$>$}\\*
+{\ttfamily \#include $<$type\+\_\+traits$>$}\\*
+{\ttfamily \#include $<$future$>$}\\*
+{\ttfamily \#include $<$tuple$>$}\\*
+{\ttfamily \#include \char`\"{}thenable.\+hpp\char`\"{}}\\*
+Include dependency graph for type\+\_\+traits.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{type__traits_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=269pt]{type__traits_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classthenable_1_1_thenable_future}{thenable\+::\+Thenable\+Future$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_promise}{thenable\+::\+Thenable\+Promise$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_shared_future}{thenable\+::\+Thenable\+Shared\+Future$<$ T $>$}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespacethenable}{thenable}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Functor $>$ }\\using \hyperlink{namespacethenable_a71ee91c31ba9c80bb2d6f3effe4bae12}{thenable\+::recursive\+\_\+result\+\_\+of} = typename detail\+::recursive\+\_\+get\+\_\+type$<$ typename std\+::result\+\_\+of$<$ Functor()$>$\+::type $>$\+::type
+\end{DoxyCompactItemize}

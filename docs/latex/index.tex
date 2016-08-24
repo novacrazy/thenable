@@ -1,0 +1,87 @@
+\begin{quote}
+\char`\"{}\+There is a point where we needed to stop and we have clearly passed it but let’s keep going and see what happens.\char`\"{} \end{quote}
+
+
+This is a generic implementation of {\ttfamily then} for C++14, allowing you to chain together futures, promises and so forth easily and efficiently.
+
+\#\# Example\+: 
+\begin{DoxyCode}
+1 \{C++\}
+2 #include "thenable.hpp"
+3 
+4 #include <iostream>
+5 #include <chrono>
+6 #include <thread>
+7 #include <assert.h>
+8 
+9 using namespace std;
+10 using namespace thenable;
+11 
+12 int main() \{
+13     ThenablePromise<int> p, k;
+14 
+15     cout << "Starting asynchronous tasks on thread: " << this\_thread::get\_id() << endl;
+16 
+17     p.then( [&k]( int i ) \{
+18         assert( i == 10 );
+19 
+20         cout << "Hello, World! from thread: " << this\_thread::get\_id() << endl;
+21 
+22         k.set\_value( 421 );
+23 
+24         return k.get\_future();
+25 
+26     \} ).then( []( int i ) \{
+27         assert( i = 421 );
+28 
+29         cout << "Hello, again! from thread: " << this\_thread::get\_id() << endl;
+30 
+31     \}, then\_launch::detached );
+32 
+33     //Launch a new thread to resolve the original promise.
+34     thread( [&p] \{
+35         cout << "Resolving promise on thread: " << this\_thread::get\_id() << endl;
+36 
+37         p.set\_value( 10 );
+38     \} ).join();
+39 
+40     //Just to keep the program alive long enough for the promises/futures to propagate.
+41     this\_thread::sleep\_for( 10s );
+42 
+43     return 0;
+44 \}
+\end{DoxyCode}
+
+
+The output of the above will be something like\+: 
+\begin{DoxyCode}
+1 Starting asynchronous tasks on thread: 1
+2 Resolving promise on thread: 4
+3 Hello, World! from thread: 2
+4 Hello, again! from thread: 3
+\end{DoxyCode}
+
+
+If {\ttfamily T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+P\+O\+L\+I\+CY} is set to {\ttfamily std\+::launch\+::deferred}, then the last two actions will be performed on the same thread.
+
+\subsection*{Dependencies}
+
+This project relies on files from my {\ttfamily function\+\_\+traits} project located here\+: \href{https://github.com/novacrazy/function_traits}{\tt function\+\_\+traits}.
+
+Clone the repo or download a Z\+IP of it and add the {\ttfamily \textquotesingle{}include\textquotesingle{}} directory to your build system.
+
+For example, to add it to {\ttfamily C\+Make\+Lists.\+txt} you would do this\+:
+
+
+\begin{DoxyCode}
+1 include\_directories(
+2     SYSTEM
+3     "/path/to/function\_traits/include"
+4     "/path/to/thenable/include"
+5 )
+\end{DoxyCode}
+
+
+\subsection*{A\+PI}
+
+Coming soon. 

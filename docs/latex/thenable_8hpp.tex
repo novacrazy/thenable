@@ -1,0 +1,143 @@
+\hypertarget{thenable_8hpp}{}\section{include/thenable/thenable.hpp File Reference}
+\label{thenable_8hpp}\index{include/thenable/thenable.\+hpp@{include/thenable/thenable.\+hpp}}
+{\ttfamily \#include $<$function\+\_\+traits.\+hpp$>$}\\*
+{\ttfamily \#include $<$assert.\+h$>$}\\*
+{\ttfamily \#include $<$future$>$}\\*
+{\ttfamily \#include $<$tuple$>$}\\*
+{\ttfamily \#include $<$memory$>$}\\*
+{\ttfamily \#include $<$thread$>$}\\*
+Include dependency graph for thenable.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{thenable_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=244pt]{thenable_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classthenable_1_1_thenable_future}{thenable\+::\+Thenable\+Future$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_future}{thenable\+::\+Thenable\+Future$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_promise}{thenable\+::\+Thenable\+Promise$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_promise}{thenable\+::\+Thenable\+Promise$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_shared_future}{thenable\+::\+Thenable\+Shared\+Future$<$ T $>$}
+\item 
+class \hyperlink{classthenable_1_1_thenable_shared_future}{thenable\+::\+Thenable\+Shared\+Future$<$ T $>$}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespacethenable}{thenable}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Functor , typename Future\+Type $>$ }\\using \hyperlink{namespacethenable_a1ecf08d6ad8b8688d7b4df047b5feaae}{thenable\+::implicit\+\_\+result\+\_\+of} = decltype(detail\+::then\+\_\+helper$<$ typename detail\+::get\+\_\+future\+\_\+type$<$ typename std\+::remove\+\_\+reference$<$ Future\+Type $>$\+::type $>$\+::type, Functor $>$\+::dispatch(std\+::forward$<$ Future\+Type $>$(std\+::declval$<$ Future\+Type $>$()), std\+::forward$<$ Functor $>$(std\+::declval$<$ Functor $>$())))
+\item 
+{\footnotesize template$<$typename Functor $>$ }\\using \hyperlink{namespacethenable_a71ee91c31ba9c80bb2d6f3effe4bae12}{thenable\+::recursive\+\_\+result\+\_\+of} = typename detail\+::recursive\+\_\+get\+\_\+type$<$ typename std\+::result\+\_\+of$<$ Functor()$>$\+::type $>$\+::type
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{thenable\+::then\+\_\+launch} \{ \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119}{thenable\+::then\+\_\+launch\+::detached} = 4
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\std\+::future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a37ee216d9dc5925d9b29253d2995aa61}{thenable\+::await\+\_\+all} (std\+::tuple$<$ std\+::future$<$ Results $>$... $>$ \&\&results, std\+::launch policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\std\+::future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a25eb0856c1e74aa180ab2b0d37313ef2}{thenable\+::await\+\_\+all} (std\+::tuple$<$ std\+::shared\+\_\+future$<$ Results $>$... $>$ \&\&results, std\+::launch policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\Thenable\+Future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a8b68e9ecc3341f793b7d5d83546c360c}{thenable\+::await\+\_\+all} (std\+::tuple$<$ Thenable\+Future$<$ Results $>$... $>$ \&\&results, std\+::launch policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\Thenable\+Future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_aa67b5bd21ea878bcfabf190dc53f3b93}{thenable\+::await\+\_\+all} (std\+::tuple$<$ Thenable\+Shared\+Future$<$ Results $>$... $>$ \&\&results, std\+::launch policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\std\+::future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a2b77cbbe1f031af6dbea0797de52894a}{thenable\+::await\+\_\+all} (std\+::tuple$<$ std\+::promise$<$ Results $>$... $>$ \&\&results, std\+::launch policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\Thenable\+Future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a80d6c4269437d398a16de61461415242}{thenable\+::await\+\_\+all} (std\+::tuple$<$ Thenable\+Promise$<$ Results $>$... $>$ \&\&results, std\+::launch policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\std\+::future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a52de34f95415017a3716c1e7c37ace7f}{thenable\+::await\+\_\+all} (std\+::tuple$<$ std\+::future$<$ Results $>$... $>$ \&\&results, then\+\_\+launch policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\std\+::future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a7b2baeb104fb7115a97586739f08af1e}{thenable\+::await\+\_\+all} (std\+::tuple$<$ std\+::shared\+\_\+future$<$ Results $>$... $>$ \&\&results, then\+\_\+launch policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\Thenable\+Future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a7e395690cce41b4b74628f989ca90c9c}{thenable\+::await\+\_\+all} (std\+::tuple$<$ Thenable\+Future$<$ Results $>$... $>$ \&\&results, then\+\_\+launch policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\Thenable\+Future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_af6530bd65e65f6c860e43b5b7ab498a1}{thenable\+::await\+\_\+all} (std\+::tuple$<$ Thenable\+Shared\+Future$<$ Results $>$... $>$ \&\&results, then\+\_\+launch policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\std\+::future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a35735af341e005998045c5705c8994d9}{thenable\+::await\+\_\+all} (std\+::tuple$<$ std\+::promise$<$ Results $>$... $>$ \&\&results, then\+\_\+launch policy)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\Thenable\+Future$<$ std\+::tuple$<$ Results... $>$ $>$ \hyperlink{namespacethenable_a497fff66463a0580dd10977df3e0549a}{thenable\+::await\+\_\+all} (std\+::tuple$<$ Thenable\+Promise$<$ Results $>$... $>$ \&\&results, then\+\_\+launch policy)
+\item 
+{\footnotesize template$<$typename Functor , typename... Args$>$ }\\std\+::future$<$ typename std\+::result\+\_\+of$<$ Functor(Args...)$>$\+::type $>$ \hyperlink{namespacethenable_aceaaf1439cfecf2aab95b6632aadf579}{thenable\+::defer} (Functor \&\&f, Args \&\&...args)
+\item 
+{\footnotesize template$<$typename Functor , typename... Args$>$ }\\Thenable\+Future$<$ typename std\+::result\+\_\+of$<$ Functor(Args...)$>$\+::type $>$ \hyperlink{namespacethenable_ad9ad041b2e810ef9b1325657a68a48d7}{thenable\+::defer2} (Functor \&\&f, Args \&\&...args)
+\item 
+{\footnotesize template$<$typename T  = void, typename Functor , typename Launch\+Policy  = std\+::launch$>$ }\\std\+::future$<$ T $>$ \hyperlink{namespacethenable_af2607b8a2775a7d983793a497aad3904}{thenable\+::make\+\_\+promise} (Functor \&\&, Launch\+Policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename T  = void, typename Functor , typename Launch\+Policy  = std\+::launch$>$ }\\Thenable\+Future$<$ T $>$ \hyperlink{namespacethenable_a48b432e0694e822676fac2de12263a43}{thenable\+::make\+\_\+promise2} (Functor \&\&, Launch\+Policy=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::tuple$<$ std\+::future$<$ recursive\+\_\+result\+\_\+of$<$ Functors $>$ $>$... $>$ \hyperlink{namespacethenable_a95e108dc8790ef2db88424ea3ae46c79}{thenable\+::parallel} (Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::tuple$<$ Thenable\+Future$<$ recursive\+\_\+result\+\_\+of$<$ Functors $>$ $>$... $>$ \hyperlink{namespacethenable_a4619a50a59383db8a890cc02d8e44262}{thenable\+::parallel2} (Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::tuple$<$ Thenable\+Future$<$ recursive\+\_\+result\+\_\+of$<$ Functors $>$ $>$... $>$ \hyperlink{namespacethenable_ae386feb6dd2b3b1171a9f40f25b57f22}{thenable\+::parallel2\+\_\+n} (size\+\_\+t concurrency, Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::tuple$<$ std\+::future$<$ recursive\+\_\+result\+\_\+of$<$ Functors $>$ $>$... $>$ \hyperlink{namespacethenable_ae08454ef27fbe2ce5a3f6b2b008a0bc2}{thenable\+::parallel\+\_\+n} (size\+\_\+t concurrency, Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_aa7417767a6d39589457c2569f900e9e8}{thenable\+::then} (std\+::future$<$ T $>$ \&, Functor \&\&, std\+::launch=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::shared\+\_\+future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_a591eb14beddb29e6d25591b5f85af87a}{thenable\+::then} (std\+::shared\+\_\+future$<$ T $>$ \&\&, Functor \&\&, std\+::launch=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::shared\+\_\+future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_ad47a2c35aefe434a7be8c074b1dda08a}{thenable\+::then} (std\+::shared\+\_\+future$<$ T $>$, Functor \&\&, std\+::launch=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_a90ae1a436866f21049d7a00a350eb3db}{thenable\+::then} (std\+::future$<$ T $>$ \&\&, Functor \&\&, std\+::launch=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_a5e3ae302e707336194333b10694e1fce}{thenable\+::then} (std\+::promise$<$ T $>$ \&, Functor \&\&, std\+::launch=default\+\_\+policy)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_ab8091f2d67ec80c1f1df9e8f10ed099f}{thenable\+::then} (std\+::future$<$ T $>$ \&, Functor \&\&, then\+\_\+launch)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::shared\+\_\+future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_acdaaca11a1470419997f4b476dcd7f0e}{thenable\+::then} (std\+::shared\+\_\+future$<$ T $>$ \&\&, Functor \&\&, then\+\_\+launch)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::shared\+\_\+future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_a234e54343659f3b576ae0565614d1c64}{thenable\+::then} (std\+::shared\+\_\+future$<$ T $>$, Functor \&\&, then\+\_\+launch)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_aed748177c95e6ae1861c9921bb1c9a84}{thenable\+::then} (std\+::future$<$ T $>$ \&\&, Functor \&\&, then\+\_\+launch)
+\item 
+{\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_aeda63a514e4f56a1be216992fe592ada}{thenable\+::then} (std\+::promise$<$ T $>$ \&, Functor \&\&, then\+\_\+launch)
+\item 
+{\footnotesize template$<$typename Future\+Type , typename Functor , typename Launch\+Policy $>$ }\\Thenable\+Future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, Future\+Type $>$ $>$ \hyperlink{namespacethenable_a80f31095c0a474f5b645c1e00256becf}{thenable\+::then2} (Future\+Type \&\&s, Functor \&\&f, Launch\+Policy policy)
+\item 
+{\footnotesize template$<$typename Future\+Type , typename Functor , typename Launch\+Policy $>$ }\\Thenable\+Future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, Future\+Type $>$ $>$ \hyperlink{namespacethenable_ac29edcabcae561565e668dfd0fd31217}{thenable\+::then2} (Future\+Type \&s, Functor \&\&f, Launch\+Policy policy)
+\item 
+{\footnotesize template$<$typename T $>$ }\\Thenable\+Future$<$ T $>$ \hyperlink{namespacethenable_a72a2eff98915486d507c1aba3409e719}{thenable\+::to\+\_\+thenable} (std\+::future$<$ T $>$ \&\&)
+\item 
+{\footnotesize template$<$typename T $>$ }\\Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_acd73ac744c2c37c705f1cef8b403d741}{thenable\+::to\+\_\+thenable} (const std\+::shared\+\_\+future$<$ T $>$ \&)
+\item 
+{\footnotesize template$<$typename T $>$ }\\Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_a0f4e0bf4b7ffd222f06570c8d9a56e49}{thenable\+::to\+\_\+thenable} (std\+::shared\+\_\+future$<$ T $>$ \&\&)
+\item 
+{\footnotesize template$<$typename T $>$ }\\Thenable\+Promise$<$ T $>$ \hyperlink{namespacethenable_adacd70a08dab010396241390a5571a2c}{thenable\+::to\+\_\+thenable} (std\+::promise$<$ T $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Future$<$ Results $>$... $>$ \hyperlink{namespacethenable_a9337c975d6426aaf9f76ad790c3b3a93}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ std\+::future$<$ Results $>$... $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Shared\+Future$<$ Results $>$... $>$ \hyperlink{namespacethenable_a444ece5332d86fa1ded34452ffca0767}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ std\+::shared\+\_\+future$<$ Results $>$... $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Promise$<$ Results $>$... $>$ \hyperlink{namespacethenable_a18e0e6c5b9a65bad51fb4351ef7bc587}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ std\+::promise$<$ Results $>$... $>$ \&\&)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr std\+::launch \hyperlink{namespacethenable_a55a20a452e9ba9c0eff946d9b8636f06}{thenable\+::default\+\_\+policy} = std\+::launch\+::deferred $\vert$ std\+::launch\+::async
+\end{DoxyCompactItemize}
