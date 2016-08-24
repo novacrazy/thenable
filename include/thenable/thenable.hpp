@@ -377,16 +377,16 @@ namespace thenable {
 
             template <typename... Args>
             inline static void invoke( Functor &&f, std::tuple<Args...> &&args ) {
-                return invoke_tuple( std::forward<Functor>( f ), std::forward<std::tuple<Args...>>( args ));
+                invoke_tuple( std::forward<Functor>( f ), std::forward<std::tuple<Args...>>( args ));
             }
 
             template <typename T>
-            inline static decltype( auto ) invoke( Functor &&f, T &&arg ) {
-                return f( std::forward<T>( arg ));
+            inline static void invoke( Functor &&f, T &&arg ) {
+                f( std::forward<T>( arg ));
             }
 
-            inline static decltype( auto ) invoke( Functor &&f ) {
-                return f();
+            inline static void invoke( Functor &&f ) {
+                f();
             }
         };
 
@@ -631,7 +631,7 @@ namespace thenable {
     template <typename T, typename Functor>
     std::future<implicit_result_of<Functor, std::future<T>>> then( std::future<T> &&s, Functor &&f, then_launch policy ) {
         //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
-        typedef decltype( detail::then_helper<T, Functor>::dispatch( std::forward<std::future<T>>( s ), std::forward<Functor>( f ))) P;
+        typedef implicit_result_of<Functor, std::future<T>> P;
 
         assert( policy == then_launch::detached );
 
@@ -664,7 +664,7 @@ namespace thenable {
     template <typename T, typename Functor>
     inline std::future<implicit_result_of<Functor, std::shared_future<T>>> then( std::shared_future<T> &&s, Functor &&f, then_launch policy ) {
         //I don't really like having to do this, but I don't feel like rewriting almost all the recursive template logic above
-        typedef decltype( detail::then_helper<T, Functor>::dispatch( std::forward<std::shared_future<T>>( s ), std::forward<Functor>( f ))) P;
+        typedef implicit_result_of<Functor, std::shared_future<T>> P;
 
         assert( policy == then_launch::detached );
 
