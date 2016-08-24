@@ -135,20 +135,6 @@ namespace thenable {
 
     //////////
 
-    template <typename Functor, typename... Args>
-    inline std::future<typename std::result_of<Functor( Args... )>::type> defer( Functor &&f, Args &&... args );
-
-    template <typename Functor, typename... Args>
-    inline ThenableFuture<typename std::result_of<Functor( Args... )>::type> defer2( Functor &&f, Args &&... args );
-
-    //////////
-
-
-
-    //////////
-
-    //////////
-
     template <typename T>
     ThenableFuture<T> to_thenable( std::future<T> && );
 
@@ -197,47 +183,6 @@ namespace thenable {
 
     //////////
 
-    template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, std::launch policy = default_policy );
-
-    template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy = default_policy );
-
-    template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, std::launch policy = default_policy );
-
-    template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy );
-
-    template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, std::launch policy = default_policy );
-
-    template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, std::launch policy = default_policy );
-
-    //////////
-
-    template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, then_launch policy );
-
-    template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, then_launch policy );
-
-    template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, then_launch policy );
-
-    template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, then_launch policy );
-
-    template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, then_launch policy );
-
-    template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, then_launch policy );
-
-
-    //////////
-
     template <typename Functor, typename... Args>
     inline std::future<typename std::result_of<Functor( Args... )>::type> defer( Functor &&f, Args &&... args ) {
         return std::async( std::launch::deferred, std::forward<Functor>( f ), std::forward<Args>( args )... );
@@ -247,6 +192,8 @@ namespace thenable {
     inline ThenableFuture<typename std::result_of<Functor( Args... )>::type> defer2( Functor &&f, Args &&... args ) {
         return to_thenable( defer( std::forward<Functor>( f ), std::forward<Args>( args )... ));
     };
+
+    //////////
 
     namespace detail {
         using namespace fn_traits;
@@ -1048,7 +995,7 @@ namespace thenable {
     //////////
 
     template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, std::launch policy ) {
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::future<Results>...> &&results, std::launch policy = default_policy ) {
         typedef std::tuple<std::future<Results>...> tuple_type;
         constexpr auto                              Size = std::tuple_size<tuple_type>::value;
 
@@ -1058,7 +1005,7 @@ namespace thenable {
     }
 
     template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy ) {
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::shared_future<Results>...> &&results, std::launch policy = default_policy ) {
         typedef std::tuple<std::shared_future<Results>...> tuple_type;
         constexpr auto                                     Size = std::tuple_size<tuple_type>::value;
 
@@ -1068,7 +1015,7 @@ namespace thenable {
     }
 
     template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, std::launch policy ) {
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableFuture<Results>...> &&results, std::launch policy = default_policy ) {
         typedef std::tuple<ThenableFuture<Results>...> tuple_type;
         constexpr auto                                 Size = std::tuple_size<tuple_type>::value;
 
@@ -1078,7 +1025,7 @@ namespace thenable {
     }
 
     template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, std::launch policy ) {
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenableSharedFuture<Results>...> &&results, std::launch policy = default_policy ) {
         typedef std::tuple<ThenableSharedFuture<Results>...> tuple_type;
         constexpr auto                                       Size = std::tuple_size<tuple_type>::value;
 
@@ -1088,7 +1035,7 @@ namespace thenable {
     }
 
     template <typename... Results>
-    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, std::launch policy ) {
+    std::future<std::tuple<Results...>> await_all( std::tuple<std::promise<Results>...> &&results, std::launch policy = default_policy ) {
         typedef std::tuple<ThenableSharedFuture<Results>...> tuple_type;
         constexpr auto                                       Size = std::tuple_size<tuple_type>::value;
 
@@ -1098,7 +1045,7 @@ namespace thenable {
     }
 
     template <typename... Results>
-    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, std::launch policy ) {
+    ThenableFuture<std::tuple<Results...>> await_all( std::tuple<ThenablePromise<Results>...> &&results, std::launch policy = default_policy ) {
         typedef std::tuple<ThenableSharedFuture<Results>...> tuple_type;
         constexpr auto                                       Size = std::tuple_size<tuple_type>::value;
 
