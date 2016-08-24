@@ -81,4 +81,4 @@ include_directories(
 
 ## API
 
-Coming soon.
+#### [Click here for Doxygen generated documentation](https://novacrazy.github.io/thenable/html/index.html)
