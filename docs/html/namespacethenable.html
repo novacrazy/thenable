@@ -114,9 +114,9 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a1ecf08d6ad8b8688d7b4df047b5feaae"><td class="memTemplParams" colspan="2">template&lt;typename Functor , typename FutureType &gt; </td></tr>
 <tr class="memitem:a1ecf08d6ad8b8688d7b4df047b5feaae"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a1ecf08d6ad8b8688d7b4df047b5feaae">implicit_result_of</a> = decltype(detail::then_helper&lt; typename detail::get_future_type&lt; typename std::remove_reference&lt; FutureType &gt;::type &gt;::type, Functor &gt;::dispatch(std::forward&lt; FutureType &gt;(std::declval&lt; FutureType &gt;()), std::forward&lt; Functor &gt;(std::declval&lt; Functor &gt;())))</td></tr>
 <tr class="separator:a1ecf08d6ad8b8688d7b4df047b5feaae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71ee91c31ba9c80bb2d6f3effe4bae12"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
-<tr class="memitem:a71ee91c31ba9c80bb2d6f3effe4bae12"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a> = typename detail::recursive_get_type&lt; typename std::result_of&lt; Functor()&gt;::type &gt;::type</td></tr>
-<tr class="separator:a71ee91c31ba9c80bb2d6f3effe4bae12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5c96f83512d34d52e355cacdec0eb02"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
+<tr class="memitem:ae5c96f83512d34d52e355cacdec0eb02"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a> = typename detail::recursive_get_future_type&lt; typename std::result_of&lt; Functor()&gt;::type &gt;::type</td></tr>
+<tr class="separator:ae5c96f83512d34d52e355cacdec0eb02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -175,16 +175,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a48b432e0694e822676fac2de12263a43"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a48b432e0694e822676fac2de12263a43">make_promise2</a> (Functor &amp;&amp;, LaunchPolicy=<a class="el" href="namespacethenable.html#a55a20a452e9ba9c0eff946d9b8636f06">default_policy</a>)</td></tr>
 <tr class="separator:a48b432e0694e822676fac2de12263a43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95e108dc8790ef2db88424ea3ae46c79"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
-<tr class="memitem:a95e108dc8790ef2db88424ea3ae46c79"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a95e108dc8790ef2db88424ea3ae46c79">parallel</a> (Functors &amp;&amp;...fns)</td></tr>
+<tr class="memitem:a95e108dc8790ef2db88424ea3ae46c79"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a95e108dc8790ef2db88424ea3ae46c79">parallel</a> (Functors &amp;&amp;...fns)</td></tr>
 <tr class="separator:a95e108dc8790ef2db88424ea3ae46c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4619a50a59383db8a890cc02d8e44262"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
-<tr class="memitem:a4619a50a59383db8a890cc02d8e44262"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a4619a50a59383db8a890cc02d8e44262">parallel2</a> (Functors &amp;&amp;...fns)</td></tr>
+<tr class="memitem:a4619a50a59383db8a890cc02d8e44262"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a4619a50a59383db8a890cc02d8e44262">parallel2</a> (Functors &amp;&amp;...fns)</td></tr>
 <tr class="separator:a4619a50a59383db8a890cc02d8e44262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae386feb6dd2b3b1171a9f40f25b57f22"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
-<tr class="memitem:ae386feb6dd2b3b1171a9f40f25b57f22"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae386feb6dd2b3b1171a9f40f25b57f22">parallel2_n</a> (size_t concurrency, Functors &amp;&amp;...fns)</td></tr>
+<tr class="memitem:ae386feb6dd2b3b1171a9f40f25b57f22"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae386feb6dd2b3b1171a9f40f25b57f22">parallel2_n</a> (size_t concurrency, Functors &amp;&amp;...fns)</td></tr>
 <tr class="separator:ae386feb6dd2b3b1171a9f40f25b57f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
-<tr class="memitem:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae08454ef27fbe2ce5a3f6b2b008a0bc2">parallel_n</a> (size_t concurrency, Functors &amp;&amp;...fns)</td></tr>
+<tr class="memitem:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae08454ef27fbe2ce5a3f6b2b008a0bc2">parallel_n</a> (size_t concurrency, Functors &amp;&amp;...fns)</td></tr>
 <tr class="separator:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7417767a6d39589457c2569f900e9e8"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Functor &gt; </td></tr>
 <tr class="memitem:aa7417767a6d39589457c2569f900e9e8"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; <a class="el" href="namespacethenable.html#a1ecf08d6ad8b8688d7b4df047b5feaae">implicit_result_of</a>&lt; Functor, std::future&lt; T &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#aa7417767a6d39589457c2569f900e9e8">then</a> (std::future&lt; T &gt; &amp;, Functor &amp;&amp;, std::launch=<a class="el" href="namespacethenable.html#a55a20a452e9ba9c0eff946d9b8636f06">default_policy</a>)</td></tr>
@@ -222,18 +222,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ac29edcabcae561565e668dfd0fd31217"><td class="memTemplParams" colspan="2">template&lt;typename FutureType , typename Functor , typename LaunchPolicy &gt; </td></tr>
 <tr class="memitem:ac29edcabcae561565e668dfd0fd31217"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#a1ecf08d6ad8b8688d7b4df047b5feaae">implicit_result_of</a>&lt; Functor, FutureType &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ac29edcabcae561565e668dfd0fd31217">then2</a> (FutureType &amp;s, Functor &amp;&amp;f, LaunchPolicy policy)</td></tr>
 <tr class="separator:ac29edcabcae561565e668dfd0fd31217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72a2eff98915486d507c1aba3409e719"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a72a2eff98915486d507c1aba3409e719"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a72a2eff98915486d507c1aba3409e719">to_thenable</a> (std::future&lt; T &gt; &amp;&amp;)</td></tr>
-<tr class="separator:a72a2eff98915486d507c1aba3409e719"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd73ac744c2c37c705f1cef8b403d741"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:acd73ac744c2c37c705f1cef8b403d741"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#acd73ac744c2c37c705f1cef8b403d741">to_thenable</a> (const std::shared_future&lt; T &gt; &amp;)</td></tr>
-<tr class="separator:acd73ac744c2c37c705f1cef8b403d741"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f4e0bf4b7ffd222f06570c8d9a56e49"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a0f4e0bf4b7ffd222f06570c8d9a56e49"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a0f4e0bf4b7ffd222f06570c8d9a56e49">to_thenable</a> (std::shared_future&lt; T &gt; &amp;&amp;)</td></tr>
-<tr class="separator:a0f4e0bf4b7ffd222f06570c8d9a56e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adacd70a08dab010396241390a5571a2c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:adacd70a08dab010396241390a5571a2c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#adacd70a08dab010396241390a5571a2c">to_thenable</a> (std::promise&lt; T &gt; &amp;&amp;)</td></tr>
-<tr class="separator:adacd70a08dab010396241390a5571a2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a237a7d314a81a8be6fb40574e7454949"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a237a7d314a81a8be6fb40574e7454949"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a237a7d314a81a8be6fb40574e7454949">to_thenable</a> (std::future&lt; T &gt; &amp;&amp;)</td></tr>
+<tr class="separator:a237a7d314a81a8be6fb40574e7454949"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae28a1f0e9368b6aedfee55957e0c772"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aae28a1f0e9368b6aedfee55957e0c772"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#aae28a1f0e9368b6aedfee55957e0c772">to_thenable</a> (const std::shared_future&lt; T &gt; &amp;)</td></tr>
+<tr class="separator:aae28a1f0e9368b6aedfee55957e0c772"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b8be419c3f5f5420a48bd68ea458f15"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9b8be419c3f5f5420a48bd68ea458f15"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a9b8be419c3f5f5420a48bd68ea458f15">to_thenable</a> (std::shared_future&lt; T &gt; &amp;&amp;)</td></tr>
+<tr class="separator:a9b8be419c3f5f5420a48bd68ea458f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e1e0d7d9fee302429067e4a1f7c2436"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6e1e0d7d9fee302429067e4a1f7c2436"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a6e1e0d7d9fee302429067e4a1f7c2436">to_thenable</a> (std::promise&lt; T &gt; &amp;&amp;)</td></tr>
+<tr class="separator:a6e1e0d7d9fee302429067e4a1f7c2436"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9337c975d6426aaf9f76ad790c3b3a93"><td class="memTemplParams" colspan="2">template&lt;typename... Results&gt; </td></tr>
 <tr class="memitem:a9337c975d6426aaf9f76ad790c3b3a93"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; Results &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a9337c975d6426aaf9f76ad790c3b3a93">to_thenable</a> (std::tuple&lt; std::future&lt; Results &gt;... &gt; &amp;&amp;)</td></tr>
 <tr class="separator:a9337c975d6426aaf9f76ad790c3b3a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -243,6 +243,27 @@ Functions</h2></td></tr>
 <tr class="memitem:a18e0e6c5b9a65bad51fb4351ef7bc587"><td class="memTemplParams" colspan="2">template&lt;typename... Results&gt; </td></tr>
 <tr class="memitem:a18e0e6c5b9a65bad51fb4351ef7bc587"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; Results &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a18e0e6c5b9a65bad51fb4351ef7bc587">to_thenable</a> (std::tuple&lt; std::promise&lt; Results &gt;... &gt; &amp;&amp;)</td></tr>
 <tr class="separator:a18e0e6c5b9a65bad51fb4351ef7bc587"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22cec8f52b9c37845ae5ae733898a106"><td class="memTemplParams" colspan="2">template&lt;typename... Results&gt; </td></tr>
+<tr class="memitem:a22cec8f52b9c37845ae5ae733898a106"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; Results &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a22cec8f52b9c37845ae5ae733898a106">to_thenable</a> (std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; Results &gt;... &gt; &amp;&amp;)</td></tr>
+<tr class="separator:a22cec8f52b9c37845ae5ae733898a106"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88f476e06ebe003343ceb2139897ab5b"><td class="memTemplParams" colspan="2">template&lt;typename... Results&gt; </td></tr>
+<tr class="memitem:a88f476e06ebe003343ceb2139897ab5b"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; Results &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a88f476e06ebe003343ceb2139897ab5b">to_thenable</a> (std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; Results &gt;... &gt; &amp;&amp;)</td></tr>
+<tr class="separator:a88f476e06ebe003343ceb2139897ab5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98c92776f4ed0bbe5316b978e575d011"><td class="memTemplParams" colspan="2">template&lt;typename... Results&gt; </td></tr>
+<tr class="memitem:a98c92776f4ed0bbe5316b978e575d011"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; Results &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a98c92776f4ed0bbe5316b978e575d011">to_thenable</a> (std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; Results &gt;... &gt; &amp;&amp;)</td></tr>
+<tr class="separator:a98c92776f4ed0bbe5316b978e575d011"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79883ce5869d4c3be2a76be8c0509e3d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a79883ce5869d4c3be2a76be8c0509e3d"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a79883ce5869d4c3be2a76be8c0509e3d">to_thenable</a> (<a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt; &amp;&amp;t)</td></tr>
+<tr class="separator:a79883ce5869d4c3be2a76be8c0509e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a414f7826f8a57f7ad134e09a8b864b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1a414f7826f8a57f7ad134e09a8b864b"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a1a414f7826f8a57f7ad134e09a8b864b">to_thenable</a> (const <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; &amp;t)</td></tr>
+<tr class="separator:a1a414f7826f8a57f7ad134e09a8b864b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e7e45908f58bd51111c8286ca423101"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a5e7e45908f58bd51111c8286ca423101"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a5e7e45908f58bd51111c8286ca423101">to_thenable</a> (<a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; &amp;&amp;t)</td></tr>
+<tr class="separator:a5e7e45908f58bd51111c8286ca423101"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5053e8ddbc047a3030ab818ce04982aa"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a5053e8ddbc047a3030ab818ce04982aa"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a5053e8ddbc047a3030ab818ce04982aa">to_thenable</a> (<a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt; &amp;&amp;t)</td></tr>
+<tr class="separator:a5053e8ddbc047a3030ab818ce04982aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -262,18 +283,18 @@ template&lt;typename Functor , typename FutureType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00478">478</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00489">489</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a71ee91c31ba9c80bb2d6f3effe4bae12"></a>
+<a class="anchor" id="ae5c96f83512d34d52e355cacdec0eb02"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Functor &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">thenable::recursive_result_of</a> = typedef typename detail::recursive_get_type&lt;typename std::result_of&lt;Functor()&gt;::type&gt;::type</td>
+          <td class="memname">using <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">thenable::recursive_result_of</a> = typedef typename detail::recursive_get_future_type&lt;typename std::result_of&lt;Functor()&gt;::type&gt;::type</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -336,7 +357,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00998">998</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01047">1047</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -366,7 +387,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01008">1008</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01057">1057</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -396,7 +417,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01018">1018</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01067">1067</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -426,7 +447,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01028">1028</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01077">1077</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -456,7 +477,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01038">1038</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01087">1087</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -486,7 +507,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01048">1048</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01097">1097</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -516,7 +537,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01060">1060</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01109">1109</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -548,7 +569,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01081">1081</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01130">1130</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -580,7 +601,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01102">1102</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01151">1151</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -612,7 +633,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01123">1123</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01172">1172</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -644,7 +665,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01145">1145</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01194">1194</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -676,7 +697,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01166">1166</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01215">1215</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -716,9 +737,9 @@ template&lt;typename Functor , typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00187">187</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00198">198</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00192">defer2()</a>, <a class="el" href="thenable_8hpp_source.html#l00835">make_promise()</a>, and <a class="el" href="thenable_8hpp_source.html#l00848">make_promise2()</a>.</p>
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00203">defer2()</a>, <a class="el" href="thenable_8hpp_source.html#l00885">make_promise()</a>, and <a class="el" href="thenable_8hpp_source.html#l00898">make_promise2()</a>.</p>
 
 </div>
 </div>
@@ -756,9 +777,9 @@ template&lt;typename Functor , typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00192">192</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00203">203</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00187">defer()</a>, and <a class="el" href="thenable_8hpp_source.html#l00796">to_thenable()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00198">defer()</a>, and <a class="el" href="thenable_8hpp_source.html#l00807">to_thenable()</a>.</p>
 
 </div>
 </div>
@@ -788,9 +809,9 @@ template&lt;typename T  = void, typename Functor , typename LaunchPolicy  = std:
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00835">835</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00885">885</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00187">defer()</a>, and <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00198">defer()</a>, and <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>.</p>
 
 </div>
 </div>
@@ -820,37 +841,13 @@ template&lt;typename T  = void, typename Functor , typename LaunchPolicy  = std:
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00848">848</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00898">898</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00187">defer()</a>, and <a class="el" href="thenable_8hpp_source.html#l00651">then2()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00198">defer()</a>, and <a class="el" href="thenable_8hpp_source.html#l00662">then2()</a>.</p>
 
 </div>
 </div>
 <a class="anchor" id="a95e108dc8790ef2db88424ea3ae46c79"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... Functors&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel </td>
-          <td>(</td>
-          <td class="paramtype">Functors &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>fns</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00979">979</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
-
-<p>References <a class="el" href="thenable_8hpp_source.html#l00954">parallel_n()</a>.</p>
-
-<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00990">parallel2()</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a4619a50a59383db8a890cc02d8e44262"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -860,7 +857,7 @@ template&lt;typename... Functors&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel2 </td>
+          <td class="memname">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel </td>
           <td>(</td>
           <td class="paramtype">Functors &amp;&amp;...&#160;</td>
           <td class="paramname"><em>fns</em></td><td>)</td>
@@ -874,9 +871,41 @@ template&lt;typename... Functors&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00990">990</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01028">1028</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00979">parallel()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l01003">parallel_n()</a>.</p>
+
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l01039">parallel2()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4619a50a59383db8a890cc02d8e44262"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Functors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel2 </td>
+          <td>(</td>
+          <td class="paramtype">Functors &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>fns</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01039">1039</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+<p>References <a class="el" href="thenable_8hpp_source.html#l01028">parallel()</a>.</p>
 
 </div>
 </div>
@@ -885,9 +914,12 @@ template&lt;typename... Functors&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename... Functors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel2_n </td>
+          <td class="memname">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel2_n </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>concurrency</em>, </td>
@@ -904,11 +936,16 @@ template&lt;typename... Functors&gt; </div>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00984">984</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01033">1033</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00954">parallel_n()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l01003">parallel_n()</a>.</p>
 
 </div>
 </div>
@@ -919,7 +956,7 @@ template&lt;typename... Functors&gt; </div>
 template&lt;typename... Functors&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#a71ee91c31ba9c80bb2d6f3effe4bae12">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel_n </td>
+          <td class="memname">std::tuple&lt; std::future&lt; <a class="el" href="namespacethenable.html#ae5c96f83512d34d52e355cacdec0eb02">recursive_result_of</a>&lt; Functors &gt; &gt;... &gt; thenable::parallel_n </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>concurrency</em>, </td>
@@ -938,9 +975,9 @@ template&lt;typename... Functors&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00954">954</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l01003">1003</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00979">parallel()</a>, and <a class="el" href="thenable_8hpp_source.html#l00984">parallel2_n()</a>.</p>
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l01028">parallel()</a>, and <a class="el" href="thenable_8hpp_source.html#l01033">parallel2_n()</a>.</p>
 
 </div>
 </div>
@@ -984,9 +1021,9 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00537">537</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00548">548</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00835">make_promise()</a>, <a class="el" href="thenable_8hpp_source.html#l00553">then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00651">then2()</a>.</p>
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00885">make_promise()</a>, <a class="el" href="thenable_8hpp_source.html#l00564">then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00662">then2()</a>.</p>
 
 </div>
 </div>
@@ -1030,7 +1067,7 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00546">546</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00557">557</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -1074,9 +1111,9 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00553">553</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00564">564</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>.</p>
 
 </div>
 </div>
@@ -1112,7 +1149,7 @@ template&lt;typename T , typename Functor &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00526">526</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00537">537</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -1156,9 +1193,9 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00562">562</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00573">573</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>.</p>
 
 </div>
 </div>
@@ -1202,9 +1239,9 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00603">603</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00614">614</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>.</p>
 
 </div>
 </div>
@@ -1248,7 +1285,7 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00612">612</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00623">623</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -1294,9 +1331,9 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00632">632</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00643">643</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>.</p>
 
 </div>
 </div>
@@ -1332,7 +1369,7 @@ template&lt;typename T , typename Functor &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00579">579</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00590">590</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 <p>References <a class="el" href="namespacethenable.html#adf31291b806157ad914943dae5b3c94eab0398fd2e0c78072a48131f810266119">detached</a>.</p>
 
@@ -1378,9 +1415,9 @@ template&lt;typename T , typename Functor &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00641">641</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00652">652</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>.</p>
 
 </div>
 </div>
@@ -1424,11 +1461,11 @@ template&lt;typename FutureType , typename Functor , typename LaunchPolicy &gt; 
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00651">651</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00662">662</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00796">to_thenable()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00807">to_thenable()</a>.</p>
 
-<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00848">make_promise2()</a>, <a class="el" href="thenable_8hpp_source.html#l00688">thenable::ThenablePromise&lt; T &gt;::then()</a>, <a class="el" href="thenable_8hpp_source.html#l00720">thenable::ThenableFuture&lt; T &gt;::then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00755">thenable::ThenableSharedFuture&lt; T &gt;::then()</a>.</p>
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00898">make_promise2()</a>, <a class="el" href="thenable_8hpp_source.html#l00699">thenable::ThenablePromise&lt; T &gt;::then()</a>, <a class="el" href="thenable_8hpp_source.html#l00731">thenable::ThenableFuture&lt; T &gt;::then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00766">thenable::ThenableSharedFuture&lt; T &gt;::then()</a>.</p>
 
 </div>
 </div>
@@ -1472,123 +1509,91 @@ template&lt;typename FutureType , typename Functor , typename LaunchPolicy &gt; 
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00656">656</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00667">667</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>References <a class="el" href="thenable_8hpp_source.html#l00537">then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00796">to_thenable()</a>.</p>
+<p>References <a class="el" href="thenable_8hpp_source.html#l00548">then()</a>, and <a class="el" href="thenable_8hpp_source.html#l00807">to_thenable()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a72a2eff98915486d507c1aba3409e719"></a>
+<a class="anchor" id="a237a7d314a81a8be6fb40574e7454949"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt; thenable::to_thenable </td>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt; thenable::to_thenable </td>
           <td>(</td>
           <td class="paramtype">std::future&lt; T &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00796">796</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00807">807</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
-<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00192">defer2()</a>, and <a class="el" href="thenable_8hpp_source.html#l00651">then2()</a>.</p>
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00203">defer2()</a>, and <a class="el" href="thenable_8hpp_source.html#l00662">then2()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="acd73ac744c2c37c705f1cef8b403d741"></a>
+<a class="anchor" id="aae28a1f0e9368b6aedfee55957e0c772"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; thenable::to_thenable </td>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; thenable::to_thenable </td>
           <td>(</td>
           <td class="paramtype">const std::shared_future&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00801">801</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00812">812</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a0f4e0bf4b7ffd222f06570c8d9a56e49"></a>
+<a class="anchor" id="a9b8be419c3f5f5420a48bd68ea458f15"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; thenable::to_thenable </td>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; thenable::to_thenable </td>
           <td>(</td>
           <td class="paramtype">std::shared_future&lt; T &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00806">806</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00817">817</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="adacd70a08dab010396241390a5571a2c"></a>
+<a class="anchor" id="a6e1e0d7d9fee302429067e4a1f7c2436"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt; thenable::to_thenable </td>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt; thenable::to_thenable </td>
           <td>(</td>
           <td class="paramtype">std::promise&lt; T &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00811">811</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00822">822</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -1608,7 +1613,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00818">818</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00851">851</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -1628,7 +1633,7 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00823">823</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00856">856</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>
@@ -1648,7 +1653,147 @@ template&lt;typename... Results&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00828">828</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00861">861</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a22cec8f52b9c37845ae5ae733898a106"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Results&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; Results &gt;... &gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; Results &gt;... &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>futures</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00868">868</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a88f476e06ebe003343ceb2139897ab5b"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Results&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; Results &gt;... &gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; Results &gt;... &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>futures</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00873">873</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a98c92776f4ed0bbe5316b978e575d011"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Results&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; Results &gt;... &gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype">std::tuple&lt; <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; Results &gt;... &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>promises</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00878">878</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a79883ce5869d4c3be2a76be8c0509e3d"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt;T&gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classthenable_1_1_thenable_future.html">ThenableFuture</a>&lt; T &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00829">829</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1a414f7826f8a57f7ad134e09a8b864b"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt;T&gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00834">834</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5e7e45908f58bd51111c8286ca423101"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt;T&gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classthenable_1_1_thenable_shared_future.html">ThenableSharedFuture</a>&lt; T &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00839">839</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5053e8ddbc047a3030ab818ce04982aa"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt;T&gt; thenable::to_thenable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classthenable_1_1_thenable_promise.html">ThenablePromise</a>&lt; T &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00844">844</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
 
 </div>
 </div>

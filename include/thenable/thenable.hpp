@@ -27,9 +27,9 @@
 
 namespace thenable {
     /*
- * The default launch policy of std::async is a combination of the std::launch flags,
- * allowing it to choose whatever policy it wants depending on the system.
- * */
+     * The default launch policy of std::async is a combination of the std::launch flags,
+     * allowing it to choose whatever policy it wants depending on the system.
+     * */
 #ifdef THENABLE_DEFAULT_POLICY
     constexpr std::launch default_policy = THENABLE_DEFAULT_POLICY;
 #else
@@ -60,41 +60,6 @@ namespace thenable {
     class ThenablePromise;
 
     namespace detail {
-        template <typename T>
-        struct recursive_get_type {
-            typedef T type;
-        };
-
-        template <typename T>
-        struct recursive_get_type<std::future<T>> {
-            typedef typename recursive_get_type<T>::type type;
-        };
-
-        template <typename T>
-        struct recursive_get_type<std::shared_future<T>> {
-            typedef typename recursive_get_type<T>::type type;
-        };
-
-        template <typename T>
-        struct recursive_get_type<std::promise<T>> {
-            typedef typename recursive_get_type<T>::type type;
-        };
-
-        template <typename T>
-        struct recursive_get_type<ThenableFuture<T>> {
-            typedef typename recursive_get_type<T>::type type;
-        };
-
-        template <typename T>
-        struct recursive_get_type<ThenableSharedFuture<T>> {
-            typedef typename recursive_get_type<T>::type type;
-        };
-
-        template <typename T>
-        struct recursive_get_type<ThenablePromise<T>> {
-            typedef typename recursive_get_type<T>::type type;
-        };
-
         template <typename T>
         struct get_future_type {
         };
@@ -128,24 +93,59 @@ namespace thenable {
         struct get_future_type<ThenablePromise<T>> {
             typedef T type;
         };
+
+        template <typename T>
+        struct recursive_get_future_type {
+            typedef T type;
+        };
+
+        template <typename T>
+        struct recursive_get_future_type<std::future<T>> {
+            typedef typename recursive_get_future_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_future_type<std::shared_future<T>> {
+            typedef typename recursive_get_future_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_future_type<std::promise<T>> {
+            typedef typename recursive_get_future_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_future_type<ThenableFuture<T>> {
+            typedef typename recursive_get_future_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_future_type<ThenableSharedFuture<T>> {
+            typedef typename recursive_get_future_type<T>::type type;
+        };
+
+        template <typename T>
+        struct recursive_get_future_type<ThenablePromise<T>> {
+            typedef typename recursive_get_future_type<T>::type type;
+        };
     }
 
     template <typename Functor>
-    using recursive_result_of = typename detail::recursive_get_type<typename std::result_of<Functor()>::type>::type;
+    using recursive_result_of = typename detail::recursive_get_future_type<typename std::result_of<Functor()>::type>::type;
 
     //////////
 
     template <typename T>
-    ThenableFuture<T> to_thenable( std::future<T> && );
+    constexpr ThenableFuture<T> to_thenable( std::future<T> && );
 
     template <typename T>
-    ThenableSharedFuture<T> to_thenable( const std::shared_future<T> & );
+    constexpr ThenableSharedFuture<T> to_thenable( const std::shared_future<T> & );
 
     template <typename T>
-    ThenableSharedFuture<T> to_thenable( std::shared_future<T> && );
+    constexpr ThenableSharedFuture<T> to_thenable( std::shared_future<T> && );
 
     template <typename T>
-    ThenablePromise<T> to_thenable( std::promise<T> && );
+    constexpr ThenablePromise<T> to_thenable( std::promise<T> && );
 
     //////////
 
@@ -157,6 +157,17 @@ namespace thenable {
 
     template <typename... Results>
     constexpr std::tuple<ThenablePromise<Results>...> to_thenable( std::tuple<std::promise<Results>...> && );
+
+    //////////
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableFuture<Results>...> to_thenable( std::tuple<ThenableFuture<Results>...> && );
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableSharedFuture<Results>...> to_thenable( std::tuple<ThenableSharedFuture<Results>...> && );
+
+    template <typename... Results>
+    constexpr std::tuple<ThenablePromise<Results>...> to_thenable( std::tuple<ThenablePromise<Results>...> && );
 
     //////////
 
@@ -224,22 +235,22 @@ namespace thenable {
          * */
 
         template <typename T>
-        typename recursive_get_type<T>::type recursive_get( std::future<T> && );
+        typename recursive_get_future_type<T>::type recursive_get( std::future<T> && );
 
         template <typename T>
-        typename recursive_get_type<T>::type recursive_get( std::shared_future<T> && );
+        typename recursive_get_future_type<T>::type recursive_get( std::shared_future<T> && );
 
         template <typename T>
-        typename recursive_get_type<T>::type recursive_get( std::promise<T> && );
+        typename recursive_get_future_type<T>::type recursive_get( std::promise<T> && );
 
         template <typename T>
-        typename recursive_get_type<T>::type recursive_get( ThenableFuture<T> && );
+        typename recursive_get_future_type<T>::type recursive_get( ThenableFuture<T> && );
 
         template <typename T>
-        typename recursive_get_type<T>::type recursive_get( ThenableSharedFuture<T> && );
+        typename recursive_get_future_type<T>::type recursive_get( ThenableSharedFuture<T> && );
 
         template <typename T>
-        typename recursive_get_type<T>::type recursive_get( ThenablePromise<T> && );
+        typename recursive_get_future_type<T>::type recursive_get( ThenablePromise<T> && );
 
         template <typename T>
         constexpr T recursive_get( T && ) noexcept;
@@ -249,27 +260,27 @@ namespace thenable {
          * */
 
         template <typename T>
-        inline typename recursive_get_type<T>::type recursive_get( std::future<T> &&t ) {
+        inline typename recursive_get_future_type<T>::type recursive_get( std::future<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <typename T>
-        inline typename recursive_get_type<T>::type recursive_get( std::shared_future<T> &&t ) {
+        inline typename recursive_get_future_type<T>::type recursive_get( std::shared_future<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <>
-        inline typename recursive_get_type<void>::type recursive_get<void>( std::future<void> &&t ) {
+        inline typename recursive_get_future_type<void>::type recursive_get<void>( std::future<void> &&t ) {
             t.get();
         };
 
         template <>
-        inline typename recursive_get_type<void>::type recursive_get<void>( std::shared_future<void> &&t ) {
+        inline typename recursive_get_future_type<void>::type recursive_get<void>( std::shared_future<void> &&t ) {
             t.get();
         };
 
         template <typename T>
-        inline typename recursive_get_type<T>::type recursive_get( std::promise<T> &&t ) {
+        inline typename recursive_get_future_type<T>::type recursive_get( std::promise<T> &&t ) {
             return recursive_get( t.get_future());
         };
 
@@ -761,27 +772,27 @@ namespace thenable {
 
     namespace detail {
         template <typename T>
-        inline typename recursive_get_type<T>::type recursive_get( ThenableFuture<T> &&t ) {
+        inline typename recursive_get_future_type<T>::type recursive_get( ThenableFuture<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <typename T>
-        inline typename recursive_get_type<T>::type recursive_get( ThenableSharedFuture<T> &&t ) {
+        inline typename recursive_get_future_type<T>::type recursive_get( ThenableSharedFuture<T> &&t ) {
             return recursive_get( t.get());
         };
 
         template <>
-        inline typename recursive_get_type<void>::type recursive_get<void>( ThenableFuture<void> &&t ) {
+        inline typename recursive_get_future_type<void>::type recursive_get<void>( ThenableFuture<void> &&t ) {
             t.get();
         };
 
         template <>
-        inline typename recursive_get_type<void>::type recursive_get<void>( ThenableSharedFuture<void> &&t ) {
+        inline typename recursive_get_future_type<void>::type recursive_get<void>( ThenableSharedFuture<void> &&t ) {
             t.get();
         };
 
         template <typename T>
-        inline typename recursive_get_type<T>::type recursive_get( ThenablePromise<T> &&t ) {
+        inline typename recursive_get_future_type<T>::type recursive_get( ThenablePromise<T> &&t ) {
             return recursive_get( t.get_future());
         };
     }
@@ -793,23 +804,45 @@ namespace thenable {
      * */
 
     template <typename T>
-    inline ThenableFuture<T> to_thenable( std::future<T> &&t ) {
+    constexpr ThenableFuture<T> to_thenable( std::future<T> &&t ) {
         return ThenableFuture<T>( std::forward<std::future<T>>( t ));
     }
 
     template <typename T>
-    inline ThenableSharedFuture<T> to_thenable( const std::shared_future<T> &t ) {
+    constexpr ThenableSharedFuture<T> to_thenable( const std::shared_future<T> &t ) {
         return ThenableSharedFuture<T>( t );
     }
 
     template <typename T>
-    inline ThenableSharedFuture<T> to_thenable( std::shared_future<T> &&t ) {
+    constexpr ThenableSharedFuture<T> to_thenable( std::shared_future<T> &&t ) {
         return ThenableSharedFuture<T>( std::forward<std::shared_future<T>>( t ));
     }
 
     template <typename T>
-    inline ThenablePromise<T> to_thenable( std::promise<T> &&t ) {
+    constexpr ThenablePromise<T> to_thenable( std::promise<T> &&t ) {
         return ThenablePromise<T>( std::forward<std::promise<T>>( t ));
+    }
+
+    //////////
+
+    template <typename T>
+    constexpr ThenableFuture<T> to_thenable( ThenableFuture<T> &&t ) {
+        return std::forward<ThenableFuture<T>>( t );
+    }
+
+    template <typename T>
+    constexpr ThenableSharedFuture<T> to_thenable( const ThenableSharedFuture<T> &t ) {
+        return std::forward<ThenableSharedFuture<T>>( t );
+    }
+
+    template <typename T>
+    constexpr ThenableSharedFuture<T> to_thenable( ThenableSharedFuture<T> &&t ) {
+        return std::forward<ThenableSharedFuture<T>>( t );
+    }
+
+    template <typename T>
+    constexpr ThenablePromise<T> to_thenable( ThenablePromise<T> &&t ) {
+        return std::forward<ThenablePromise<T>>( t );
     }
 
     //////////
@@ -827,6 +860,23 @@ namespace thenable {
     template <typename... Results>
     constexpr std::tuple<ThenablePromise<Results>...> to_thenable( std::tuple<std::promise<Results>...> &&promises ) {
         return std::tuple<ThenablePromise<Results>...>( std::forward<std::tuple<std::promise<Results>...>>( promises ));
+    }
+
+    //////////
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableFuture<Results>...> to_thenable( std::tuple<ThenableFuture<Results>...> &&futures ) {
+        return std::forward<std::tuple<ThenableFuture<Results>...>>( futures );
+    }
+
+    template <typename... Results>
+    constexpr std::tuple<ThenableSharedFuture<Results>...> to_thenable( std::tuple<ThenableSharedFuture<Results>...> &&futures ) {
+        return std::forward<std::tuple<ThenableSharedFuture<Results>...>>( futures );
+    }
+
+    template <typename... Results>
+    constexpr std::tuple<ThenablePromise<Results>...> to_thenable( std::tuple<ThenablePromise<Results>...> &&promises ) {
+        return std::forward<std::tuple<ThenablePromise<Results>...>>( promises );
     }
 
     //////////
@@ -861,11 +911,10 @@ namespace thenable {
 
     namespace detail {
         template <typename... Functors>
-        using promise_tuple = std::tuple<std::promise<typename recursive_get_type<fn_traits::fn_result_of<Functors>>::type>...>;
+        using promise_tuple = std::tuple<std::promise<typename recursive_get_future_type<fn_traits::fn_result_of<Functors>>::type>...>;
 
         template <typename... Functors>
-        using result_tuple = std::tuple<std::future<typename detail::recursive_get_type<fn_traits::fn_result_of<Functors>>::type>...>;
-
+        using result_tuple = std::tuple<std::future<typename detail::recursive_get_future_type<fn_traits::fn_result_of<Functors>>::type>...>;
 
         template <size_t i, typename... Functors>
         constexpr typename std::enable_if<i == sizeof...( Functors )>::type
@@ -888,7 +937,7 @@ namespace thenable {
 
             inline tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
 
-            inline void invoke( std::promise<typename recursive_get_type<fn_traits::fn_result_of<Functor>>::type> &p ) noexcept {
+            inline void invoke( std::promise<typename recursive_get_future_type<fn_traits::fn_result_of<Functor>>::type> &p ) noexcept {
                 try {
                     p.set_value( recursive_get( f()));
 
@@ -976,12 +1025,12 @@ namespace thenable {
     }
 
     template <typename... Functors>
-    std::tuple<std::future<recursive_result_of<Functors>>...> parallel( Functors &&... fns ) {
+    inline std::tuple<std::future<recursive_result_of<Functors>>...> parallel( Functors &&... fns ) {
         return parallel_n( std::thread::hardware_concurrency(), std::forward<Functors>( fns )... );
     }
 
     template <typename... Functors>
-    std::tuple<ThenableFuture<recursive_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns ) {
+    inline std::tuple<ThenableFuture<recursive_result_of<Functors>>...> parallel2_n( size_t concurrency, Functors &&... fns ) {
         //Implicit conversion to ThenableFuture
         return parallel_n( concurrency, std::forward<Functors>( fns )... );
     }

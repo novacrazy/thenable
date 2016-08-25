@@ -45,7 +45,7 @@ class \hyperlink{classthenable_1_1_thenable_shared_future}{thenable\+::\+Thenabl
 \item 
 {\footnotesize template$<$typename Functor , typename Future\+Type $>$ }\\using \hyperlink{namespacethenable_a1ecf08d6ad8b8688d7b4df047b5feaae}{thenable\+::implicit\+\_\+result\+\_\+of} = decltype(detail\+::then\+\_\+helper$<$ typename detail\+::get\+\_\+future\+\_\+type$<$ typename std\+::remove\+\_\+reference$<$ Future\+Type $>$\+::type $>$\+::type, Functor $>$\+::dispatch(std\+::forward$<$ Future\+Type $>$(std\+::declval$<$ Future\+Type $>$()), std\+::forward$<$ Functor $>$(std\+::declval$<$ Functor $>$())))
 \item 
-{\footnotesize template$<$typename Functor $>$ }\\using \hyperlink{namespacethenable_a71ee91c31ba9c80bb2d6f3effe4bae12}{thenable\+::recursive\+\_\+result\+\_\+of} = typename detail\+::recursive\+\_\+get\+\_\+type$<$ typename std\+::result\+\_\+of$<$ Functor()$>$\+::type $>$\+::type
+{\footnotesize template$<$typename Functor $>$ }\\using \hyperlink{namespacethenable_ae5c96f83512d34d52e355cacdec0eb02}{thenable\+::recursive\+\_\+result\+\_\+of} = typename detail\+::recursive\+\_\+get\+\_\+future\+\_\+type$<$ typename std\+::result\+\_\+of$<$ Functor()$>$\+::type $>$\+::type
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -120,19 +120,33 @@ enum \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{thenable\+:
 \item 
 {\footnotesize template$<$typename Future\+Type , typename Functor , typename Launch\+Policy $>$ }\\Thenable\+Future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, Future\+Type $>$ $>$ \hyperlink{namespacethenable_ac29edcabcae561565e668dfd0fd31217}{thenable\+::then2} (Future\+Type \&s, Functor \&\&f, Launch\+Policy policy)
 \item 
-{\footnotesize template$<$typename T $>$ }\\Thenable\+Future$<$ T $>$ \hyperlink{namespacethenable_a72a2eff98915486d507c1aba3409e719}{thenable\+::to\+\_\+thenable} (std\+::future$<$ T $>$ \&\&)
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Future$<$ T $>$ \hyperlink{namespacethenable_a237a7d314a81a8be6fb40574e7454949}{thenable\+::to\+\_\+thenable} (std\+::future$<$ T $>$ \&\&)
 \item 
-{\footnotesize template$<$typename T $>$ }\\Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_acd73ac744c2c37c705f1cef8b403d741}{thenable\+::to\+\_\+thenable} (const std\+::shared\+\_\+future$<$ T $>$ \&)
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_aae28a1f0e9368b6aedfee55957e0c772}{thenable\+::to\+\_\+thenable} (const std\+::shared\+\_\+future$<$ T $>$ \&)
 \item 
-{\footnotesize template$<$typename T $>$ }\\Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_a0f4e0bf4b7ffd222f06570c8d9a56e49}{thenable\+::to\+\_\+thenable} (std\+::shared\+\_\+future$<$ T $>$ \&\&)
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_a9b8be419c3f5f5420a48bd68ea458f15}{thenable\+::to\+\_\+thenable} (std\+::shared\+\_\+future$<$ T $>$ \&\&)
 \item 
-{\footnotesize template$<$typename T $>$ }\\Thenable\+Promise$<$ T $>$ \hyperlink{namespacethenable_adacd70a08dab010396241390a5571a2c}{thenable\+::to\+\_\+thenable} (std\+::promise$<$ T $>$ \&\&)
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Promise$<$ T $>$ \hyperlink{namespacethenable_a6e1e0d7d9fee302429067e4a1f7c2436}{thenable\+::to\+\_\+thenable} (std\+::promise$<$ T $>$ \&\&)
 \item 
 {\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Future$<$ Results $>$... $>$ \hyperlink{namespacethenable_a9337c975d6426aaf9f76ad790c3b3a93}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ std\+::future$<$ Results $>$... $>$ \&\&)
 \item 
 {\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Shared\+Future$<$ Results $>$... $>$ \hyperlink{namespacethenable_a444ece5332d86fa1ded34452ffca0767}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ std\+::shared\+\_\+future$<$ Results $>$... $>$ \&\&)
 \item 
 {\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Promise$<$ Results $>$... $>$ \hyperlink{namespacethenable_a18e0e6c5b9a65bad51fb4351ef7bc587}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ std\+::promise$<$ Results $>$... $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Future$<$ Results $>$... $>$ \hyperlink{namespacethenable_a22cec8f52b9c37845ae5ae733898a106}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ Thenable\+Future$<$ Results $>$... $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Shared\+Future$<$ Results $>$... $>$ \hyperlink{namespacethenable_a88f476e06ebe003343ceb2139897ab5b}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ Thenable\+Shared\+Future$<$ Results $>$... $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... Results$>$ }\\constexpr std\+::tuple$<$ Thenable\+Promise$<$ Results $>$... $>$ \hyperlink{namespacethenable_a98c92776f4ed0bbe5316b978e575d011}{thenable\+::to\+\_\+thenable} (std\+::tuple$<$ Thenable\+Promise$<$ Results $>$... $>$ \&\&)
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Future$<$ T $>$ \hyperlink{namespacethenable_a79883ce5869d4c3be2a76be8c0509e3d}{thenable\+::to\+\_\+thenable} (Thenable\+Future$<$ T $>$ \&\&t)
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_a1a414f7826f8a57f7ad134e09a8b864b}{thenable\+::to\+\_\+thenable} (const Thenable\+Shared\+Future$<$ T $>$ \&t)
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_a5e7e45908f58bd51111c8286ca423101}{thenable\+::to\+\_\+thenable} (Thenable\+Shared\+Future$<$ T $>$ \&\&t)
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Promise$<$ T $>$ \hyperlink{namespacethenable_a5053e8ddbc047a3030ab818ce04982aa}{thenable\+::to\+\_\+thenable} (Thenable\+Promise$<$ T $>$ \&\&t)
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
