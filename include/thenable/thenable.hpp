@@ -13,6 +13,9 @@
 #include <memory>
 #include <thread>
 
+//This is defined so it can be quickly toggled if something needs debugging
+#define THENABLE_NOEXCEPT noexcept
+
 /*
  * The `then` function implemented below is designed to be very similar to JavaScript's Promise.then in functionality.
  *
@@ -253,7 +256,7 @@ namespace thenable {
         typename recursive_get_future_type<T>::type recursive_get( ThenablePromise<T> && );
 
         template <typename T>
-        constexpr T recursive_get( T && ) noexcept;
+        constexpr T recursive_get( T && ) THENABLE_NOEXCEPT;
 
         /*
          * std future implementations. ThenableX implementations are below their class implementation at the bottom of the file.
@@ -288,7 +291,7 @@ namespace thenable {
          * This just forwards anything that is NOT a promise or future and doesn't do anything to it.
          * */
         template <typename T>
-        constexpr T recursive_get( T &&t ) noexcept {
+        constexpr T recursive_get( T &&t ) THENABLE_NOEXCEPT {
             return std::forward<T>( t );
         };
 
@@ -396,7 +399,7 @@ namespace thenable {
         template <typename T>
         struct detached_then_helper {
             template <typename Functor, typename K>
-            static inline void dispatch( std::promise<T> &p, std::future<K> &&s, Functor &&f ) noexcept {
+            static inline void dispatch( std::promise<T> &p, std::future<K> &&s, Functor &&f ) THENABLE_NOEXCEPT {
                 try {
                     p.set_value( then_helper<K, Functor>::dispatch( std::forward<std::future<K>>( s ), std::forward<Functor>( f )));
 
@@ -406,7 +409,7 @@ namespace thenable {
             }
 
             template <typename Functor, typename K>
-            static inline void dispatch( std::promise<T> &p, std::shared_future<K> &&s, Functor &&f ) noexcept {
+            static inline void dispatch( std::promise<T> &p, std::shared_future<K> &&s, Functor &&f ) THENABLE_NOEXCEPT {
                 try {
                     p.set_value( then_helper<K, Functor>::dispatch( std::forward<std::shared_future<K>>( s ), std::forward<Functor>( f )));
 
@@ -422,7 +425,7 @@ namespace thenable {
         template <>
         struct detached_then_helper<void> {
             template <typename Functor, typename K>
-            static inline void dispatch( std::promise<void> &p, std::future<K> &&s, Functor &&f ) noexcept {
+            static inline void dispatch( std::promise<void> &p, std::future<K> &&s, Functor &&f ) THENABLE_NOEXCEPT {
                 try {
                     then_helper<K, Functor>::dispatch( std::forward<std::future<K>>( s ), std::forward<Functor>( f ));
 
@@ -434,7 +437,7 @@ namespace thenable {
             }
 
             template <typename Functor, typename K>
-            static inline void dispatch( std::promise<void> &p, std::shared_future<K> &&s, Functor &&f ) noexcept {
+            static inline void dispatch( std::promise<void> &p, std::shared_future<K> &&s, Functor &&f ) THENABLE_NOEXCEPT {
                 try {
                     then_helper<K, Functor>::dispatch( std::forward<std::shared_future<K>>( s ), std::forward<Functor>( f ));
 
@@ -449,12 +452,12 @@ namespace thenable {
         template <typename T>
         struct make_promise_helper {
             template <typename Functor>
-            inline static void dispatch( Functor &&f, const std::shared_ptr<std::promise<T>> &p ) noexcept {
+            inline static void dispatch( Functor &&f, const std::shared_ptr<std::promise<T>> &p ) THENABLE_NOEXCEPT {
                 try {
-                    f( [p]( const T &resolved_value ) noexcept {
+                    f( [p]( const T &resolved_value ) THENABLE_NOEXCEPT {
                         p->set_value( resolved_value );
 
-                    }, [p]( auto rejected_value ) noexcept {
+                    }, [p]( auto rejected_value ) THENABLE_NOEXCEPT {
                         p->set_exception( std::make_exception_ptr( rejected_value ));
                     } );
 
@@ -467,12 +470,12 @@ namespace thenable {
         template <>
         struct make_promise_helper<void> {
             template <typename Functor>
-            inline static void dispatch( Functor &&f, const std::shared_ptr<std::promise<void>> &p ) noexcept {
+            inline static void dispatch( Functor &&f, const std::shared_ptr<std::promise<void>> &p ) THENABLE_NOEXCEPT {
                 try {
-                    f( [p]() noexcept {
+                    f( [p]() THENABLE_NOEXCEPT {
                         p->set_value();
 
-                    }, [p]( auto rejected_value ) noexcept {
+                    }, [p]( auto rejected_value ) THENABLE_NOEXCEPT {
                         p->set_exception( std::make_exception_ptr( rejected_value ));
                     } );
 
@@ -683,11 +686,11 @@ namespace thenable {
 
             ThenablePromise &operator=( const ThenablePromise & ) = delete;
 
-            constexpr operator std::promise<T> &() noexcept {
+            constexpr operator std::promise<T> &() THENABLE_NOEXCEPT {
                 return *static_cast<std::promise<T> *>(this);
             }
 
-            constexpr operator std::promise<T> &&() noexcept {
+            constexpr operator std::promise<T> &&() THENABLE_NOEXCEPT {
                 return std::move( *static_cast<std::promise<T> *>(this));
             }
 
@@ -709,11 +712,11 @@ namespace thenable {
     template <typename T>
     class ThenableFuture : public std::future<T> {
         public:
-            constexpr ThenableFuture() noexcept : std::future<T>() {}
+            constexpr ThenableFuture() THENABLE_NOEXCEPT : std::future<T>() {}
 
-            inline ThenableFuture( std::future<T> &&f ) noexcept : std::future<T>( std::forward<std::future<T>>( f )) {}
+            inline ThenableFuture( std::future<T> &&f ) THENABLE_NOEXCEPT : std::future<T>( std::forward<std::future<T>>( f )) {}
 
-            inline ThenableFuture( ThenableFuture &&f ) noexcept : std::future<T>( std::forward<std::future<T>>( f )) {}
+            inline ThenableFuture( ThenableFuture &&f ) THENABLE_NOEXCEPT : std::future<T>( std::forward<std::future<T>>( f )) {}
 
             ThenableFuture( const ThenableFuture & ) = delete;
 
@@ -740,19 +743,19 @@ namespace thenable {
     template <typename T>
     class ThenableSharedFuture : public std::shared_future<T> {
         public:
-            constexpr ThenableSharedFuture() noexcept : std::shared_future<T>() {}
+            constexpr ThenableSharedFuture() THENABLE_NOEXCEPT : std::shared_future<T>() {}
 
-            inline ThenableSharedFuture( const std::shared_future<T> &f ) noexcept : std::shared_future<T>( f ) {}
+            inline ThenableSharedFuture( const std::shared_future<T> &f ) THENABLE_NOEXCEPT : std::shared_future<T>( f ) {}
 
-            inline ThenableSharedFuture( const ThenableSharedFuture &f ) noexcept : std::shared_future<T>( f ) {}
+            inline ThenableSharedFuture( const ThenableSharedFuture &f ) THENABLE_NOEXCEPT : std::shared_future<T>( f ) {}
 
-            inline ThenableSharedFuture( std::future<T> &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
+            inline ThenableSharedFuture( std::future<T> &&f ) THENABLE_NOEXCEPT : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-            inline ThenableSharedFuture( ThenableFuture<T> &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
+            inline ThenableSharedFuture( ThenableFuture<T> &&f ) THENABLE_NOEXCEPT : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-            inline ThenableSharedFuture( std::shared_future<T> &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
+            inline ThenableSharedFuture( std::shared_future<T> &&f ) THENABLE_NOEXCEPT : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
-            inline ThenableSharedFuture( ThenableSharedFuture &&f ) noexcept : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
+            inline ThenableSharedFuture( ThenableSharedFuture &&f ) THENABLE_NOEXCEPT : std::shared_future<T>( std::forward<std::shared_future<T>>( f )) {}
 
             constexpr operator std::shared_future<T> &() {
                 return *static_cast<std::shared_future<T> *>(this);
@@ -885,7 +888,7 @@ namespace thenable {
     std::future<T> make_promise( Functor &&f, LaunchPolicy policy ) {
         auto p = std::make_shared<std::promise<T>>();
 
-        return then( defer( [p]( Functor &&f2 ) noexcept {
+        return then( defer( [p]( Functor &&f2 ) THENABLE_NOEXCEPT {
             detail::make_promise_helper<T>::dispatch( std::forward<Functor>( f2 ), p );
 
         }, std::forward<Functor>( f )), [p] {
@@ -898,7 +901,7 @@ namespace thenable {
     ThenableFuture<T> make_promise2( Functor &&f, LaunchPolicy policy ) {
         auto p = std::make_shared<std::promise<T>>();
 
-        return then2( defer( [p]( Functor &&f2 ) noexcept {
+        return then2( defer( [p]( Functor &&f2 ) THENABLE_NOEXCEPT {
             detail::make_promise_helper<T>::dispatch( std::forward<Functor>( f2 ), p );
 
         }, std::forward<Functor>( f )), [p] {
@@ -937,7 +940,7 @@ namespace thenable {
 
             inline tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
 
-            inline void invoke( std::promise<typename recursive_get_future_type<fn_traits::fn_result_of<Functor>>::type> &p ) noexcept {
+            inline void invoke( std::promise<typename recursive_get_future_type<fn_traits::fn_result_of<Functor>>::type> &p ) THENABLE_NOEXCEPT {
                 try {
                     p.set_value( recursive_get( f()));
 
@@ -954,7 +957,7 @@ namespace thenable {
 
             inline tagged_functor( Functor &&_f ) : f( std::forward<Functor>( _f )) {}
 
-            inline void invoke( std::promise<void> &p ) noexcept {
+            inline void invoke( std::promise<void> &p ) THENABLE_NOEXCEPT {
                 try {
                     f();
 
@@ -968,13 +971,13 @@ namespace thenable {
 
         template <size_t i, typename... Functors>
         constexpr typename std::enable_if<i == sizeof...( Functors )>::type
-        invoke_parallel_functors( promise_tuple<Functors...> &, std::tuple<tagged_functor<Functors>...> & ) noexcept {
+        invoke_parallel_functors( promise_tuple<Functors...> &, std::tuple<tagged_functor<Functors>...> & ) THENABLE_NOEXCEPT {
             //No-op
         };
 
         template <size_t i, typename... Functors>
         inline typename std::enable_if<i < sizeof...( Functors )>::type
-        invoke_parallel_functors( promise_tuple<Functors...> &promises, std::tuple<tagged_functor<Functors>...> &fns ) noexcept {
+        invoke_parallel_functors( promise_tuple<Functors...> &promises, std::tuple<tagged_functor<Functors>...> &fns ) THENABLE_NOEXCEPT {
             bool expect_ran = false;
 
             auto &func = std::get<i>( fns );
@@ -1016,7 +1019,7 @@ namespace thenable {
         detail::initialize_parallel_futures<0, Functors...>( result, *p );
 
         for( size_t i = 0, min_concurrency = std::min( concurrency, sizeof...( Functors )); i < min_concurrency; ++i ) {
-            std::thread( [p, f]() noexcept {
+            std::thread( [p, f]() THENABLE_NOEXCEPT {
                 detail::invoke_parallel_functors<0, Functors...>( *p, *f );
             } ).detach();
         }
