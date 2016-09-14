@@ -110,6 +110,11 @@ namespace thenable {
         inline decltype( auto ) waterfall( Functors &&... fns ) {
             return waterfall( default_policy, std::forward<Functors>( fns )... );
         }
+
+        template <typename... Args>
+        inline decltype( auto ) waterfall2( Args &&... args ) {
+            return to_thenable( waterfall( std::forward<Args>( args )... ));
+        };
     }
 }
 
