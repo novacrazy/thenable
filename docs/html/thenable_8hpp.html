@@ -64,6 +64,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -89,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
@@ -138,6 +140,13 @@ Classes</h2></td></tr>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacethenable"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacethenable.html">thenable</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a6f29f330aaf59da6e36ca808e77af767"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thenable_8hpp.html#a6f29f330aaf59da6e36ca808e77af767">THENABLE_DECLTYPE_AUTO_HINTED</a>(hint)&#160;&#160;&#160;hint&lt;auto&gt;</td></tr>
+<tr class="separator:a6f29f330aaf59da6e36ca808e77af767"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ebc2813058817dd4558298461204c31"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thenable_8hpp.html#a9ebc2813058817dd4558298461204c31">THENABLE_NOEXCEPT</a>&#160;&#160;&#160;noexcept</td></tr>
+<tr class="separator:a9ebc2813058817dd4558298461204c31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -216,6 +225,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
 <tr class="memitem:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memTemplItemLeft" align="right" valign="top">std::tuple&lt; std::future&lt; recursive_result_of&lt; Functors &gt; &gt;... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae08454ef27fbe2ce5a3f6b2b008a0bc2">thenable::parallel_n</a> (size_t concurrency, Functors &amp;&amp;...fns)</td></tr>
 <tr class="separator:ae08454ef27fbe2ce5a3f6b2b008a0bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18d5736181b78751445202e0c8b15a89"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
+<tr class="memitem:a18d5736181b78751445202e0c8b15a89"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a18d5736181b78751445202e0c8b15a89">thenable::reverse_waterfall</a> (std::launch policy, Functor &amp;&amp;f)</td></tr>
+<tr class="separator:a18d5736181b78751445202e0c8b15a89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af79aec5683931fe9e0fd77ff6f70ef0a"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
+<tr class="memitem:af79aec5683931fe9e0fd77ff6f70ef0a"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#af79aec5683931fe9e0fd77ff6f70ef0a">thenable::reverse_waterfall</a> (then_launch policy, Functor &amp;&amp;f)</td></tr>
+<tr class="separator:af79aec5683931fe9e0fd77ff6f70ef0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae89686b48dae0d225b8f942d49e9bb80"><td class="memTemplParams" colspan="2">template&lt;typename PolicyType , typename Functor , typename... Functors&gt; </td></tr>
+<tr class="memitem:ae89686b48dae0d225b8f942d49e9bb80"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ae89686b48dae0d225b8f942d49e9bb80">thenable::reverse_waterfall</a> (PolicyType policy, Functor &amp;&amp;f, Functors &amp;&amp;...fns)</td></tr>
+<tr class="separator:ae89686b48dae0d225b8f942d49e9bb80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7417767a6d39589457c2569f900e9e8"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Functor &gt; </td></tr>
 <tr class="memitem:aa7417767a6d39589457c2569f900e9e8"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; implicit_result_of&lt; Functor, std::future&lt; T &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#aa7417767a6d39589457c2569f900e9e8">thenable::then</a> (std::future&lt; T &gt; &amp;, Functor &amp;&amp;, std::launch=default_policy)</td></tr>
 <tr class="separator:aa7417767a6d39589457c2569f900e9e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -294,12 +312,59 @@ Functions</h2></td></tr>
 <tr class="memitem:a5053e8ddbc047a3030ab818ce04982aa"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a5053e8ddbc047a3030ab818ce04982aa"><td class="memTemplItemLeft" align="right" valign="top">constexpr ThenablePromise&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a5053e8ddbc047a3030ab818ce04982aa">thenable::to_thenable</a> (ThenablePromise&lt; T &gt; &amp;&amp;t)</td></tr>
 <tr class="separator:a5053e8ddbc047a3030ab818ce04982aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33c6172954453b975c9f4ae67e0a0aa3"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
+<tr class="memitem:a33c6172954453b975c9f4ae67e0a0aa3"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a33c6172954453b975c9f4ae67e0a0aa3">thenable::waterfall</a> (std::launch policy, Functors &amp;&amp;...fns)</td></tr>
+<tr class="separator:a33c6172954453b975c9f4ae67e0a0aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad94b01ba5d7ac4f724c024c6508d9d4e"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
+<tr class="memitem:ad94b01ba5d7ac4f724c024c6508d9d4e"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#ad94b01ba5d7ac4f724c024c6508d9d4e">thenable::waterfall</a> (then_launch policy, Functors &amp;&amp;...fns)</td></tr>
+<tr class="separator:ad94b01ba5d7ac4f724c024c6508d9d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66dca065a7fa161e3ca68d43e1bac85a"><td class="memTemplParams" colspan="2">template&lt;typename... Functors&gt; </td></tr>
+<tr class="memitem:a66dca065a7fa161e3ca68d43e1bac85a"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a66dca065a7fa161e3ca68d43e1bac85a">thenable::waterfall</a> (Functors &amp;&amp;...fns)</td></tr>
+<tr class="separator:a66dca065a7fa161e3ca68d43e1bac85a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12edde6863ab12b3c9d3c4e47a6e4136"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a12edde6863ab12b3c9d3c4e47a6e4136"><td class="memTemplItemLeft" align="right" valign="top">std::future&lt; auto &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a12edde6863ab12b3c9d3c4e47a6e4136">thenable::waterfall2</a> (Args &amp;&amp;...args)</td></tr>
+<tr class="separator:a12edde6863ab12b3c9d3c4e47a6e4136"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a55a20a452e9ba9c0eff946d9b8636f06"><td class="memItemLeft" align="right" valign="top">constexpr std::launch&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacethenable.html#a55a20a452e9ba9c0eff946d9b8636f06">thenable::default_policy</a> = std::launch::deferred | std::launch::async</td></tr>
 <tr class="separator:a55a20a452e9ba9c0eff946d9b8636f06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a6f29f330aaf59da6e36ca808e77af767"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THENABLE_DECLTYPE_AUTO_HINTED</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">hint</td><td>)</td>
+          <td>&#160;&#160;&#160;hint&lt;auto&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00020">20</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9ebc2813058817dd4558298461204c31"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THENABLE_NOEXCEPT&#160;&#160;&#160;noexcept</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="thenable_8hpp_source.html#l00017">17</a> of file <a class="el" href="thenable_8hpp_source.html">thenable.hpp</a>.</p>
+
+<p>Referenced by <a class="el" href="thenable_8hpp_source.html#l00212">thenable::defer2()</a>, <a class="el" href="thenable_8hpp_source.html#l00894">thenable::make_promise()</a>, <a class="el" href="thenable_8hpp_source.html#l00907">thenable::make_promise2()</a>, and <a class="el" href="thenable_8hpp_source.html#l01012">thenable::parallel_n()</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

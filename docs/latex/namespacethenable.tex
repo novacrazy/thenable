@@ -70,6 +70,12 @@ enum \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{then\+\_\+l
 \item 
 {\footnotesize template$<$typename... Functors$>$ }\\std\+::tuple$<$ std\+::future$<$ \hyperlink{namespacethenable_ae5c96f83512d34d52e355cacdec0eb02}{recursive\+\_\+result\+\_\+of}$<$ Functors $>$ $>$... $>$ \hyperlink{namespacethenable_ae08454ef27fbe2ce5a3f6b2b008a0bc2}{parallel\+\_\+n} (size\+\_\+t concurrency, Functors \&\&...fns)
 \item 
+{\footnotesize template$<$typename Functor $>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a18d5736181b78751445202e0c8b15a89}{reverse\+\_\+waterfall} (std\+::launch policy, Functor \&\&f)
+\item 
+{\footnotesize template$<$typename Functor $>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_af79aec5683931fe9e0fd77ff6f70ef0a}{reverse\+\_\+waterfall} (\hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{then\+\_\+launch} policy, Functor \&\&f)
+\item 
+{\footnotesize template$<$typename Policy\+Type , typename Functor , typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_ae89686b48dae0d225b8f942d49e9bb80}{reverse\+\_\+waterfall} (Policy\+Type policy, Functor \&\&f, Functors \&\&...fns)
+\item 
 {\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ \hyperlink{namespacethenable_a1ecf08d6ad8b8688d7b4df047b5feaae}{implicit\+\_\+result\+\_\+of}$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_aa7417767a6d39589457c2569f900e9e8}{then} (std\+::future$<$ T $>$ \&, Functor \&\&, std\+::launch=\hyperlink{namespacethenable_a55a20a452e9ba9c0eff946d9b8636f06}{default\+\_\+policy})
 \item 
 {\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ \hyperlink{namespacethenable_a1ecf08d6ad8b8688d7b4df047b5feaae}{implicit\+\_\+result\+\_\+of}$<$ Functor, std\+::shared\+\_\+future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_a591eb14beddb29e6d25591b5f85af87a}{then} (std\+::shared\+\_\+future$<$ T $>$ \&\&, Functor \&\&, std\+::launch=\hyperlink{namespacethenable_a55a20a452e9ba9c0eff946d9b8636f06}{default\+\_\+policy})
@@ -121,6 +127,14 @@ enum \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{then\+\_\+l
 {\footnotesize template$<$typename T $>$ }\\constexpr \hyperlink{classthenable_1_1_thenable_shared_future}{Thenable\+Shared\+Future}$<$ T $>$ \hyperlink{namespacethenable_a5e7e45908f58bd51111c8286ca423101}{to\+\_\+thenable} (\hyperlink{classthenable_1_1_thenable_shared_future}{Thenable\+Shared\+Future}$<$ T $>$ \&\&t)
 \item 
 {\footnotesize template$<$typename T $>$ }\\constexpr \hyperlink{classthenable_1_1_thenable_promise}{Thenable\+Promise}$<$ T $>$ \hyperlink{namespacethenable_a5053e8ddbc047a3030ab818ce04982aa}{to\+\_\+thenable} (\hyperlink{classthenable_1_1_thenable_promise}{Thenable\+Promise}$<$ T $>$ \&\&t)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a33c6172954453b975c9f4ae67e0a0aa3}{waterfall} (std\+::launch policy, Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_ad94b01ba5d7ac4f724c024c6508d9d4e}{waterfall} (\hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{then\+\_\+launch} policy, Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a66dca065a7fa161e3ca68d43e1bac85a}{waterfall} (Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Args$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a12edde6863ab12b3c9d3c4e47a6e4136}{waterfall2} (Args \&\&...args)
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -135,14 +149,14 @@ constexpr std\+::launch \hyperlink{namespacethenable_a55a20a452e9ba9c0eff946d9b8
 \subsubsection[{\texorpdfstring{implicit\+\_\+result\+\_\+of}{implicit_result_of}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Functor , typename Future\+Type $>$ using {\bf thenable\+::implicit\+\_\+result\+\_\+of} = typedef decltype( detail\+::then\+\_\+helper$<$typename detail\+::get\+\_\+future\+\_\+type$<$typename std\+::remove\+\_\+reference$<$Future\+Type$>$\+::type$>$\+::type, Functor$>$\+::dispatch( std\+::forward$<$Future\+Type$>$( std\+::declval$<$Future\+Type$>$()), std\+::forward$<$Functor$>$( std\+::declval$<$Functor$>$())))}\hypertarget{namespacethenable_a1ecf08d6ad8b8688d7b4df047b5feaae}{}\label{namespacethenable_a1ecf08d6ad8b8688d7b4df047b5feaae}
 
 
-Definition at line 489 of file thenable.\+hpp.
+Definition at line 498 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!recursive\+\_\+result\+\_\+of@{recursive\+\_\+result\+\_\+of}}
 \index{recursive\+\_\+result\+\_\+of@{recursive\+\_\+result\+\_\+of}!thenable@{thenable}}
 \subsubsection[{\texorpdfstring{recursive\+\_\+result\+\_\+of}{recursive_result_of}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Functor $>$ using {\bf thenable\+::recursive\+\_\+result\+\_\+of} = typedef typename detail\+::recursive\+\_\+get\+\_\+future\+\_\+type$<$typename std\+::result\+\_\+of$<$Functor()$>$\+::type$>$\+::type}\hypertarget{namespacethenable_ae5c96f83512d34d52e355cacdec0eb02}{}\label{namespacethenable_ae5c96f83512d34d52e355cacdec0eb02}
 
 
-Definition at line 134 of file thenable.\+hpp.
+Definition at line 143 of file thenable.\+hpp.
 
 
 
@@ -159,7 +173,7 @@ detached\hypertarget{namespacethenable_adf31291b806157ad914943dae5b3c94eab0398fd
 \end{Desc}
 
 
-Definition at line 47 of file thenable.\+hpp.
+Definition at line 56 of file thenable.\+hpp.
 
 
 
@@ -174,7 +188,7 @@ Definition at line 47 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a37ee216d9dc5925d9b29253d2995aa61}{}\label{namespacethenable_a37ee216d9dc5925d9b29253d2995aa61}
 
 
-Definition at line 1047 of file thenable.\+hpp.
+Definition at line 1056 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!await\+\_\+all@{await\+\_\+all}}
 \index{await\+\_\+all@{await\+\_\+all}!thenable@{thenable}}
@@ -186,7 +200,7 @@ Definition at line 1047 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a25eb0856c1e74aa180ab2b0d37313ef2}{}\label{namespacethenable_a25eb0856c1e74aa180ab2b0d37313ef2}
 
 
-Definition at line 1057 of file thenable.\+hpp.
+Definition at line 1066 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!await\+\_\+all@{await\+\_\+all}}
 \index{await\+\_\+all@{await\+\_\+all}!thenable@{thenable}}
@@ -198,7 +212,7 @@ Definition at line 1057 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a8b68e9ecc3341f793b7d5d83546c360c}{}\label{namespacethenable_a8b68e9ecc3341f793b7d5d83546c360c}
 
 
-Definition at line 1067 of file thenable.\+hpp.
+Definition at line 1076 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!await\+\_\+all@{await\+\_\+all}}
 \index{await\+\_\+all@{await\+\_\+all}!thenable@{thenable}}
@@ -210,7 +224,7 @@ Definition at line 1067 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_aa67b5bd21ea878bcfabf190dc53f3b93}{}\label{namespacethenable_aa67b5bd21ea878bcfabf190dc53f3b93}
 
 
-Definition at line 1077 of file thenable.\+hpp.
+Definition at line 1086 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!await\+\_\+all@{await\+\_\+all}}
 \index{await\+\_\+all@{await\+\_\+all}!thenable@{thenable}}
@@ -222,7 +236,7 @@ Definition at line 1077 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a2b77cbbe1f031af6dbea0797de52894a}{}\label{namespacethenable_a2b77cbbe1f031af6dbea0797de52894a}
 
 
-Definition at line 1087 of file thenable.\+hpp.
+Definition at line 1096 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!await\+\_\+all@{await\+\_\+all}}
 \index{await\+\_\+all@{await\+\_\+all}!thenable@{thenable}}
@@ -234,7 +248,7 @@ Definition at line 1087 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a80d6c4269437d398a16de61461415242}{}\label{namespacethenable_a80d6c4269437d398a16de61461415242}
 
 
-Definition at line 1097 of file thenable.\+hpp.
+Definition at line 1106 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!await\+\_\+all@{await\+\_\+all}}
 \index{await\+\_\+all@{await\+\_\+all}!thenable@{thenable}}
@@ -246,7 +260,7 @@ Definition at line 1097 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a52de34f95415017a3716c1e7c37ace7f}{}\label{namespacethenable_a52de34f95415017a3716c1e7c37ace7f}
 
 
-Definition at line 1109 of file thenable.\+hpp.
+Definition at line 1118 of file thenable.\+hpp.
 
 
 
@@ -262,7 +276,7 @@ References detached.
 )}\hypertarget{namespacethenable_a7b2baeb104fb7115a97586739f08af1e}{}\label{namespacethenable_a7b2baeb104fb7115a97586739f08af1e}
 
 
-Definition at line 1130 of file thenable.\+hpp.
+Definition at line 1139 of file thenable.\+hpp.
 
 
 
@@ -278,7 +292,7 @@ References detached.
 )}\hypertarget{namespacethenable_a7e395690cce41b4b74628f989ca90c9c}{}\label{namespacethenable_a7e395690cce41b4b74628f989ca90c9c}
 
 
-Definition at line 1151 of file thenable.\+hpp.
+Definition at line 1160 of file thenable.\+hpp.
 
 
 
@@ -294,7 +308,7 @@ References detached.
 )}\hypertarget{namespacethenable_af6530bd65e65f6c860e43b5b7ab498a1}{}\label{namespacethenable_af6530bd65e65f6c860e43b5b7ab498a1}
 
 
-Definition at line 1172 of file thenable.\+hpp.
+Definition at line 1181 of file thenable.\+hpp.
 
 
 
@@ -310,7 +324,7 @@ References detached.
 )}\hypertarget{namespacethenable_a35735af341e005998045c5705c8994d9}{}\label{namespacethenable_a35735af341e005998045c5705c8994d9}
 
 
-Definition at line 1194 of file thenable.\+hpp.
+Definition at line 1203 of file thenable.\+hpp.
 
 
 
@@ -326,7 +340,7 @@ References detached.
 )}\hypertarget{namespacethenable_a497fff66463a0580dd10977df3e0549a}{}\label{namespacethenable_a497fff66463a0580dd10977df3e0549a}
 
 
-Definition at line 1215 of file thenable.\+hpp.
+Definition at line 1224 of file thenable.\+hpp.
 
 
 
@@ -342,7 +356,7 @@ References detached.
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_aceaaf1439cfecf2aab95b6632aadf579}{}\label{namespacethenable_aceaaf1439cfecf2aab95b6632aadf579}
 
 
-Definition at line 198 of file thenable.\+hpp.
+Definition at line 207 of file thenable.\+hpp.
 
 
 
@@ -358,11 +372,11 @@ Referenced by defer2(), make\+\_\+promise(), and make\+\_\+promise2().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ad9ad041b2e810ef9b1325657a68a48d7}{}\label{namespacethenable_ad9ad041b2e810ef9b1325657a68a48d7}
 
 
-Definition at line 203 of file thenable.\+hpp.
+Definition at line 212 of file thenable.\+hpp.
 
 
 
-References defer(), and to\+\_\+thenable().
+References defer(), T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT, and to\+\_\+thenable().
 
 \index{thenable@{thenable}!make\+\_\+promise@{make\+\_\+promise}}
 \index{make\+\_\+promise@{make\+\_\+promise}!thenable@{thenable}}
@@ -374,11 +388,11 @@ References defer(), and to\+\_\+thenable().
 )}\hypertarget{namespacethenable_af2607b8a2775a7d983793a497aad3904}{}\label{namespacethenable_af2607b8a2775a7d983793a497aad3904}
 
 
-Definition at line 885 of file thenable.\+hpp.
+Definition at line 894 of file thenable.\+hpp.
 
 
 
-References defer(), and then().
+References defer(), then(), and T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT.
 
 \index{thenable@{thenable}!make\+\_\+promise2@{make\+\_\+promise2}}
 \index{make\+\_\+promise2@{make\+\_\+promise2}!thenable@{thenable}}
@@ -390,11 +404,11 @@ References defer(), and then().
 )}\hypertarget{namespacethenable_a48b432e0694e822676fac2de12263a43}{}\label{namespacethenable_a48b432e0694e822676fac2de12263a43}
 
 
-Definition at line 898 of file thenable.\+hpp.
+Definition at line 907 of file thenable.\+hpp.
 
 
 
-References defer(), and then2().
+References defer(), then2(), and T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT.
 
 \index{thenable@{thenable}!parallel@{parallel}}
 \index{parallel@{parallel}!thenable@{thenable}}
@@ -405,7 +419,7 @@ References defer(), and then2().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a95e108dc8790ef2db88424ea3ae46c79}{}\label{namespacethenable_a95e108dc8790ef2db88424ea3ae46c79}
 
 
-Definition at line 1028 of file thenable.\+hpp.
+Definition at line 1037 of file thenable.\+hpp.
 
 
 
@@ -424,7 +438,7 @@ Referenced by parallel2().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a4619a50a59383db8a890cc02d8e44262}{}\label{namespacethenable_a4619a50a59383db8a890cc02d8e44262}
 
 
-Definition at line 1039 of file thenable.\+hpp.
+Definition at line 1048 of file thenable.\+hpp.
 
 
 
@@ -440,7 +454,7 @@ References parallel().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ae386feb6dd2b3b1171a9f40f25b57f22}{}\label{namespacethenable_ae386feb6dd2b3b1171a9f40f25b57f22}
 
 
-Definition at line 1033 of file thenable.\+hpp.
+Definition at line 1042 of file thenable.\+hpp.
 
 
 
@@ -456,11 +470,64 @@ References parallel\+\_\+n().
 )}\hypertarget{namespacethenable_ae08454ef27fbe2ce5a3f6b2b008a0bc2}{}\label{namespacethenable_ae08454ef27fbe2ce5a3f6b2b008a0bc2}
 
 
-Definition at line 1003 of file thenable.\+hpp.
+Definition at line 1012 of file thenable.\+hpp.
+
+
+
+References T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT.
 
 
 
 Referenced by parallel(), and parallel2\+\_\+n().
+
+\index{thenable@{thenable}!reverse\+\_\+waterfall@{reverse\+\_\+waterfall}}
+\index{reverse\+\_\+waterfall@{reverse\+\_\+waterfall}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{reverse\+\_\+waterfall(std\+::launch policy, Functor \&\&f)}{reverse_waterfall(std::launch policy, Functor &&f)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Functor $>$ std\+::future$<$auto$>$ thenable\+::reverse\+\_\+waterfall (
+\begin{DoxyParamCaption}
+\item[{std\+::launch}]{policy, }
+\item[{Functor \&\&}]{f}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a18d5736181b78751445202e0c8b15a89}{}\label{namespacethenable_a18d5736181b78751445202e0c8b15a89}
+
+
+Definition at line 1284 of file thenable.\+hpp.
+
+
+
+Referenced by reverse\+\_\+waterfall().
+
+\index{thenable@{thenable}!reverse\+\_\+waterfall@{reverse\+\_\+waterfall}}
+\index{reverse\+\_\+waterfall@{reverse\+\_\+waterfall}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{reverse\+\_\+waterfall(then\+\_\+launch policy, Functor \&\&f)}{reverse_waterfall(then_launch policy, Functor &&f)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Functor $>$ std\+::future$<$auto$>$ thenable\+::reverse\+\_\+waterfall (
+\begin{DoxyParamCaption}
+\item[{{\bf then\+\_\+launch}}]{policy, }
+\item[{Functor \&\&}]{f}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacethenable_af79aec5683931fe9e0fd77ff6f70ef0a}{}\label{namespacethenable_af79aec5683931fe9e0fd77ff6f70ef0a}
+
+
+Definition at line 1291 of file thenable.\+hpp.
+
+
+
+References detached.
+
+\index{thenable@{thenable}!reverse\+\_\+waterfall@{reverse\+\_\+waterfall}}
+\index{reverse\+\_\+waterfall@{reverse\+\_\+waterfall}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{reverse\+\_\+waterfall(\+Policy\+Type policy, Functor \&\&f, Functors \&\&...\+fns)}{reverse_waterfall(PolicyType policy, Functor &&f, Functors &&...fns)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Policy\+Type , typename Functor , typename... Functors$>$ std\+::future$<$auto$>$ thenable\+::reverse\+\_\+waterfall (
+\begin{DoxyParamCaption}
+\item[{Policy\+Type}]{policy, }
+\item[{Functor \&\&}]{f, }
+\item[{Functors \&\&...}]{fns}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ae89686b48dae0d225b8f942d49e9bb80}{}\label{namespacethenable_ae89686b48dae0d225b8f942d49e9bb80}
+
+
+Definition at line 1306 of file thenable.\+hpp.
+
+
+
+References reverse\+\_\+waterfall(), and then().
 
 \index{thenable@{thenable}!then@{then}}
 \index{then@{then}!thenable@{thenable}}
@@ -473,11 +540,11 @@ Referenced by parallel(), and parallel2\+\_\+n().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_aa7417767a6d39589457c2569f900e9e8}{}\label{namespacethenable_aa7417767a6d39589457c2569f900e9e8}
 
 
-Definition at line 548 of file thenable.\+hpp.
+Definition at line 557 of file thenable.\+hpp.
 
 
 
-Referenced by make\+\_\+promise(), then(), and then2().
+Referenced by make\+\_\+promise(), reverse\+\_\+waterfall(), then(), and then2().
 
 \index{thenable@{thenable}!then@{then}}
 \index{then@{then}!thenable@{thenable}}
@@ -490,7 +557,7 @@ Referenced by make\+\_\+promise(), then(), and then2().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a591eb14beddb29e6d25591b5f85af87a}{}\label{namespacethenable_a591eb14beddb29e6d25591b5f85af87a}
 
 
-Definition at line 557 of file thenable.\+hpp.
+Definition at line 566 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!then@{then}}
 \index{then@{then}!thenable@{thenable}}
@@ -503,7 +570,7 @@ Definition at line 557 of file thenable.\+hpp.
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ad47a2c35aefe434a7be8c074b1dda08a}{}\label{namespacethenable_ad47a2c35aefe434a7be8c074b1dda08a}
 
 
-Definition at line 564 of file thenable.\+hpp.
+Definition at line 573 of file thenable.\+hpp.
 
 
 
@@ -520,7 +587,7 @@ References then().
 )}\hypertarget{namespacethenable_a90ae1a436866f21049d7a00a350eb3db}{}\label{namespacethenable_a90ae1a436866f21049d7a00a350eb3db}
 
 
-Definition at line 537 of file thenable.\+hpp.
+Definition at line 546 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!then@{then}}
 \index{then@{then}!thenable@{thenable}}
@@ -533,7 +600,7 @@ Definition at line 537 of file thenable.\+hpp.
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a5e3ae302e707336194333b10694e1fce}{}\label{namespacethenable_a5e3ae302e707336194333b10694e1fce}
 
 
-Definition at line 573 of file thenable.\+hpp.
+Definition at line 582 of file thenable.\+hpp.
 
 
 
@@ -550,7 +617,7 @@ References then().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ab8091f2d67ec80c1f1df9e8f10ed099f}{}\label{namespacethenable_ab8091f2d67ec80c1f1df9e8f10ed099f}
 
 
-Definition at line 614 of file thenable.\+hpp.
+Definition at line 623 of file thenable.\+hpp.
 
 
 
@@ -567,7 +634,7 @@ References then().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_acdaaca11a1470419997f4b476dcd7f0e}{}\label{namespacethenable_acdaaca11a1470419997f4b476dcd7f0e}
 
 
-Definition at line 623 of file thenable.\+hpp.
+Definition at line 632 of file thenable.\+hpp.
 
 
 
@@ -584,7 +651,7 @@ References detached.
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a234e54343659f3b576ae0565614d1c64}{}\label{namespacethenable_a234e54343659f3b576ae0565614d1c64}
 
 
-Definition at line 643 of file thenable.\+hpp.
+Definition at line 652 of file thenable.\+hpp.
 
 
 
@@ -601,7 +668,7 @@ References then().
 )}\hypertarget{namespacethenable_aed748177c95e6ae1861c9921bb1c9a84}{}\label{namespacethenable_aed748177c95e6ae1861c9921bb1c9a84}
 
 
-Definition at line 590 of file thenable.\+hpp.
+Definition at line 599 of file thenable.\+hpp.
 
 
 
@@ -618,7 +685,7 @@ References detached.
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_aeda63a514e4f56a1be216992fe592ada}{}\label{namespacethenable_aeda63a514e4f56a1be216992fe592ada}
 
 
-Definition at line 652 of file thenable.\+hpp.
+Definition at line 661 of file thenable.\+hpp.
 
 
 
@@ -635,7 +702,7 @@ References then().
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a80f31095c0a474f5b645c1e00256becf}{}\label{namespacethenable_a80f31095c0a474f5b645c1e00256becf}
 
 
-Definition at line 662 of file thenable.\+hpp.
+Definition at line 671 of file thenable.\+hpp.
 
 
 
@@ -656,7 +723,7 @@ Referenced by make\+\_\+promise2(), thenable\+::\+Thenable\+Promise$<$ T $>$\+::
 )\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ac29edcabcae561565e668dfd0fd31217}{}\label{namespacethenable_ac29edcabcae561565e668dfd0fd31217}
 
 
-Definition at line 667 of file thenable.\+hpp.
+Definition at line 676 of file thenable.\+hpp.
 
 
 
@@ -671,11 +738,11 @@ References then(), and to\+\_\+thenable().
 )}\hypertarget{namespacethenable_a237a7d314a81a8be6fb40574e7454949}{}\label{namespacethenable_a237a7d314a81a8be6fb40574e7454949}
 
 
-Definition at line 807 of file thenable.\+hpp.
+Definition at line 816 of file thenable.\+hpp.
 
 
 
-Referenced by defer2(), and then2().
+Referenced by defer2(), then2(), and waterfall2().
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -686,7 +753,7 @@ Referenced by defer2(), and then2().
 )}\hypertarget{namespacethenable_aae28a1f0e9368b6aedfee55957e0c772}{}\label{namespacethenable_aae28a1f0e9368b6aedfee55957e0c772}
 
 
-Definition at line 812 of file thenable.\+hpp.
+Definition at line 821 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -697,7 +764,7 @@ Definition at line 812 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a9b8be419c3f5f5420a48bd68ea458f15}{}\label{namespacethenable_a9b8be419c3f5f5420a48bd68ea458f15}
 
 
-Definition at line 817 of file thenable.\+hpp.
+Definition at line 826 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -708,7 +775,7 @@ Definition at line 817 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a6e1e0d7d9fee302429067e4a1f7c2436}{}\label{namespacethenable_a6e1e0d7d9fee302429067e4a1f7c2436}
 
 
-Definition at line 822 of file thenable.\+hpp.
+Definition at line 831 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -719,7 +786,7 @@ Definition at line 822 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a9337c975d6426aaf9f76ad790c3b3a93}{}\label{namespacethenable_a9337c975d6426aaf9f76ad790c3b3a93}
 
 
-Definition at line 851 of file thenable.\+hpp.
+Definition at line 860 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -730,7 +797,7 @@ Definition at line 851 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a444ece5332d86fa1ded34452ffca0767}{}\label{namespacethenable_a444ece5332d86fa1ded34452ffca0767}
 
 
-Definition at line 856 of file thenable.\+hpp.
+Definition at line 865 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -741,7 +808,7 @@ Definition at line 856 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a18e0e6c5b9a65bad51fb4351ef7bc587}{}\label{namespacethenable_a18e0e6c5b9a65bad51fb4351ef7bc587}
 
 
-Definition at line 861 of file thenable.\+hpp.
+Definition at line 870 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -752,7 +819,7 @@ Definition at line 861 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a22cec8f52b9c37845ae5ae733898a106}{}\label{namespacethenable_a22cec8f52b9c37845ae5ae733898a106}
 
 
-Definition at line 868 of file thenable.\+hpp.
+Definition at line 877 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -763,7 +830,7 @@ Definition at line 868 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a88f476e06ebe003343ceb2139897ab5b}{}\label{namespacethenable_a88f476e06ebe003343ceb2139897ab5b}
 
 
-Definition at line 873 of file thenable.\+hpp.
+Definition at line 882 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -774,7 +841,7 @@ Definition at line 873 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a98c92776f4ed0bbe5316b978e575d011}{}\label{namespacethenable_a98c92776f4ed0bbe5316b978e575d011}
 
 
-Definition at line 878 of file thenable.\+hpp.
+Definition at line 887 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -785,7 +852,7 @@ Definition at line 878 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a79883ce5869d4c3be2a76be8c0509e3d}{}\label{namespacethenable_a79883ce5869d4c3be2a76be8c0509e3d}
 
 
-Definition at line 829 of file thenable.\+hpp.
+Definition at line 838 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -796,7 +863,7 @@ Definition at line 829 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a1a414f7826f8a57f7ad134e09a8b864b}{}\label{namespacethenable_a1a414f7826f8a57f7ad134e09a8b864b}
 
 
-Definition at line 834 of file thenable.\+hpp.
+Definition at line 843 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -807,7 +874,7 @@ Definition at line 834 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a5e7e45908f58bd51111c8286ca423101}{}\label{namespacethenable_a5e7e45908f58bd51111c8286ca423101}
 
 
-Definition at line 839 of file thenable.\+hpp.
+Definition at line 848 of file thenable.\+hpp.
 
 \index{thenable@{thenable}!to\+\_\+thenable@{to\+\_\+thenable}}
 \index{to\+\_\+thenable@{to\+\_\+thenable}!thenable@{thenable}}
@@ -818,7 +885,65 @@ Definition at line 839 of file thenable.\+hpp.
 )}\hypertarget{namespacethenable_a5053e8ddbc047a3030ab818ce04982aa}{}\label{namespacethenable_a5053e8ddbc047a3030ab818ce04982aa}
 
 
-Definition at line 844 of file thenable.\+hpp.
+Definition at line 853 of file thenable.\+hpp.
+
+\index{thenable@{thenable}!waterfall@{waterfall}}
+\index{waterfall@{waterfall}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{waterfall(std\+::launch policy, Functors \&\&...\+fns)}{waterfall(std::launch policy, Functors &&...fns)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename... Functors$>$ std\+::future$<$auto$>$ thenable\+::waterfall (
+\begin{DoxyParamCaption}
+\item[{std\+::launch}]{policy, }
+\item[{Functors \&\&...}]{fns}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a33c6172954453b975c9f4ae67e0a0aa3}{}\label{namespacethenable_a33c6172954453b975c9f4ae67e0a0aa3}
+
+
+Definition at line 1345 of file thenable.\+hpp.
+
+
+
+Referenced by waterfall(), and waterfall2().
+
+\index{thenable@{thenable}!waterfall@{waterfall}}
+\index{waterfall@{waterfall}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{waterfall(then\+\_\+launch policy, Functors \&\&...\+fns)}{waterfall(then_launch policy, Functors &&...fns)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename... Functors$>$ std\+::future$<$auto$>$ thenable\+::waterfall (
+\begin{DoxyParamCaption}
+\item[{{\bf then\+\_\+launch}}]{policy, }
+\item[{Functors \&\&...}]{fns}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_ad94b01ba5d7ac4f724c024c6508d9d4e}{}\label{namespacethenable_ad94b01ba5d7ac4f724c024c6508d9d4e}
+
+
+Definition at line 1350 of file thenable.\+hpp.
+
+\index{thenable@{thenable}!waterfall@{waterfall}}
+\index{waterfall@{waterfall}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{waterfall(\+Functors \&\&...\+fns)}{waterfall(Functors &&...fns)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename... Functors$>$ std\+::future$<$auto$>$ thenable\+::waterfall (
+\begin{DoxyParamCaption}
+\item[{Functors \&\&...}]{fns}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a66dca065a7fa161e3ca68d43e1bac85a}{}\label{namespacethenable_a66dca065a7fa161e3ca68d43e1bac85a}
+
+
+Definition at line 1355 of file thenable.\+hpp.
+
+
+
+References waterfall().
+
+\index{thenable@{thenable}!waterfall2@{waterfall2}}
+\index{waterfall2@{waterfall2}!thenable@{thenable}}
+\subsubsection[{\texorpdfstring{waterfall2(\+Args \&\&...\+args)}{waterfall2(Args &&...args)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename... Args$>$ std\+::future$<$auto$>$ thenable\+::waterfall2 (
+\begin{DoxyParamCaption}
+\item[{Args \&\&...}]{args}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{namespacethenable_a12edde6863ab12b3c9d3c4e47a6e4136}{}\label{namespacethenable_a12edde6863ab12b3c9d3c4e47a6e4136}
+
+
+Definition at line 1360 of file thenable.\+hpp.
+
+
+
+References to\+\_\+thenable(), and waterfall().
 
 
 
@@ -828,5 +953,5 @@ Definition at line 844 of file thenable.\+hpp.
 \subsubsection[{\texorpdfstring{default\+\_\+policy}{default_policy}}]{\setlength{\rightskip}{0pt plus 5cm}constexpr std\+::launch thenable\+::default\+\_\+policy = std\+::launch\+::deferred $\vert$ std\+::launch\+::async}\hypertarget{namespacethenable_a55a20a452e9ba9c0eff946d9b8636f06}{}\label{namespacethenable_a55a20a452e9ba9c0eff946d9b8636f06}
 
 
-Definition at line 36 of file thenable.\+hpp.
+Definition at line 45 of file thenable.\+hpp.
 

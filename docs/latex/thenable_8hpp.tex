@@ -40,6 +40,13 @@ class \hyperlink{classthenable_1_1_thenable_shared_future}{thenable\+::\+Thenabl
 \item 
  \hyperlink{namespacethenable}{thenable}
 \end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{thenable_8hpp_a6f29f330aaf59da6e36ca808e77af767}{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED}(hint)~hint$<$auto$>$
+\item 
+\#define \hyperlink{thenable_8hpp_a9ebc2813058817dd4558298461204c31}{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT}~noexcept
+\end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
@@ -96,6 +103,12 @@ enum \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{thenable\+:
 \item 
 {\footnotesize template$<$typename... Functors$>$ }\\std\+::tuple$<$ std\+::future$<$ recursive\+\_\+result\+\_\+of$<$ Functors $>$ $>$... $>$ \hyperlink{namespacethenable_ae08454ef27fbe2ce5a3f6b2b008a0bc2}{thenable\+::parallel\+\_\+n} (size\+\_\+t concurrency, Functors \&\&...fns)
 \item 
+{\footnotesize template$<$typename Functor $>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a18d5736181b78751445202e0c8b15a89}{thenable\+::reverse\+\_\+waterfall} (std\+::launch policy, Functor \&\&f)
+\item 
+{\footnotesize template$<$typename Functor $>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_af79aec5683931fe9e0fd77ff6f70ef0a}{thenable\+::reverse\+\_\+waterfall} (then\+\_\+launch policy, Functor \&\&f)
+\item 
+{\footnotesize template$<$typename Policy\+Type , typename Functor , typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_ae89686b48dae0d225b8f942d49e9bb80}{thenable\+::reverse\+\_\+waterfall} (Policy\+Type policy, Functor \&\&f, Functors \&\&...fns)
+\item 
 {\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_aa7417767a6d39589457c2569f900e9e8}{thenable\+::then} (std\+::future$<$ T $>$ \&, Functor \&\&, std\+::launch=default\+\_\+policy)
 \item 
 {\footnotesize template$<$typename T , typename Functor $>$ }\\std\+::future$<$ implicit\+\_\+result\+\_\+of$<$ Functor, std\+::shared\+\_\+future$<$ T $>$ $>$ $>$ \hyperlink{namespacethenable_a591eb14beddb29e6d25591b5f85af87a}{thenable\+::then} (std\+::shared\+\_\+future$<$ T $>$ \&\&, Functor \&\&, std\+::launch=default\+\_\+policy)
@@ -147,9 +160,42 @@ enum \hyperlink{namespacethenable_adf31291b806157ad914943dae5b3c94e}{thenable\+:
 {\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Shared\+Future$<$ T $>$ \hyperlink{namespacethenable_a5e7e45908f58bd51111c8286ca423101}{thenable\+::to\+\_\+thenable} (Thenable\+Shared\+Future$<$ T $>$ \&\&t)
 \item 
 {\footnotesize template$<$typename T $>$ }\\constexpr Thenable\+Promise$<$ T $>$ \hyperlink{namespacethenable_a5053e8ddbc047a3030ab818ce04982aa}{thenable\+::to\+\_\+thenable} (Thenable\+Promise$<$ T $>$ \&\&t)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a33c6172954453b975c9f4ae67e0a0aa3}{thenable\+::waterfall} (std\+::launch policy, Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_ad94b01ba5d7ac4f724c024c6508d9d4e}{thenable\+::waterfall} (then\+\_\+launch policy, Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Functors$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a66dca065a7fa161e3ca68d43e1bac85a}{thenable\+::waterfall} (Functors \&\&...fns)
+\item 
+{\footnotesize template$<$typename... Args$>$ }\\std\+::future$<$ auto $>$ \hyperlink{namespacethenable_a12edde6863ab12b3c9d3c4e47a6e4136}{thenable\+::waterfall2} (Args \&\&...args)
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 constexpr std\+::launch \hyperlink{namespacethenable_a55a20a452e9ba9c0eff946d9b8636f06}{thenable\+::default\+\_\+policy} = std\+::launch\+::deferred $\vert$ std\+::launch\+::async
 \end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\index{thenable.\+hpp@{thenable.\+hpp}!T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED@{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED}}
+\index{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED@{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED}!thenable.\+hpp@{thenable.\+hpp}}
+\subsubsection[{\texorpdfstring{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED}{THENABLE_DECLTYPE_AUTO_HINTED}}]{\setlength{\rightskip}{0pt plus 5cm}\#define T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+C\+L\+T\+Y\+P\+E\+\_\+\+A\+U\+T\+O\+\_\+\+H\+I\+N\+T\+ED(
+\begin{DoxyParamCaption}
+\item[{}]{hint}
+\end{DoxyParamCaption}
+)~hint$<$auto$>$}\hypertarget{thenable_8hpp_a6f29f330aaf59da6e36ca808e77af767}{}\label{thenable_8hpp_a6f29f330aaf59da6e36ca808e77af767}
+
+
+Definition at line 20 of file thenable.\+hpp.
+
+\index{thenable.\+hpp@{thenable.\+hpp}!T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT@{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT}}
+\index{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT@{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT}!thenable.\+hpp@{thenable.\+hpp}}
+\subsubsection[{\texorpdfstring{T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT}{THENABLE_NOEXCEPT}}]{\setlength{\rightskip}{0pt plus 5cm}\#define T\+H\+E\+N\+A\+B\+L\+E\+\_\+\+N\+O\+E\+X\+C\+E\+PT~noexcept}\hypertarget{thenable_8hpp_a9ebc2813058817dd4558298461204c31}{}\label{thenable_8hpp_a9ebc2813058817dd4558298461204c31}
+
+
+Definition at line 17 of file thenable.\+hpp.
+
+
+
+Referenced by thenable\+::defer2(), thenable\+::make\+\_\+promise(), thenable\+::make\+\_\+promise2(), and thenable\+::parallel\+\_\+n().
+
