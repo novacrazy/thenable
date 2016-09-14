@@ -15,6 +15,10 @@ namespace thenable {
         namespace detail {
             using namespace ::thenable::detail;
 
+            /*
+             * These are very similar to the detached_then_helper helper structures, exception it bypasses the then_helper::dispatch part since this doesn't have to wait
+             * on a future. It just invokes it with a value using then_invoke_helper, and sets the promise to the result
+             * */
             template <typename T>
             struct detached_waterfall_helper {
                 template <typename Functor>
@@ -44,6 +48,10 @@ namespace thenable {
             };
         }
 
+        /*
+         * So because of the nature of variadic templates, the actual waterfall implementation needed to be in reverse.
+         * It goes from the last functor to first
+         * */
         template <typename Functor>
         decltype( auto ) reverse_waterfall( std::launch policy, Functor &&f ) {
             return std::async( policy, []( Functor &&f2 ) {
@@ -74,6 +82,8 @@ namespace thenable {
         namespace detail {
             /*
              * Found this solution at http://stackoverflow.com/a/15907838
+             *
+             * It applies variadic templates to a function in reverse by recursively calling itself with the template parameters shifted over
              * */
 
             template <class ...Head>
@@ -95,6 +105,12 @@ namespace thenable {
                 }
             };
         }
+
+
+        /*
+         * Actual waterfall implementations that just forward the policy and functors through the forward_waterfall
+         * which reverses them and calls reverse_waterfall
+         * */
 
         template <typename... Functors>
         inline decltype( auto ) waterfall( std::launch policy, Functors &&... fns ) {
