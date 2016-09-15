@@ -16,6 +16,14 @@
 //This is defined so it can be quickly toggled if something needs debugging
 #define THENABLE_NOEXCEPT noexcept
 
+/*
+ * This is here for the few situations where the result is simply too complex to express as anything other than decltype(auto),
+ * but I know it will return a certain form of a value. Like std::future<auto>, where it is a future type, but the value of auto is entirely contextual based on what
+ * you give the function. Especially with the waterfall function, where the value of the future is based upon recursive asynchronous functions. There is a point where
+ * I just give up trying to express that.
+ *
+ * Even implicit_result_of is decltype based, because it doesn't know either. It was just a bit simpler to do that for one function deep.
+ * */
 #ifdef DOXYGEN_DEFINED
 #define THENABLE_DECLTYPE_AUTO_HINTED(hint) hint<auto>
 #else
