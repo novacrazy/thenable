@@ -1323,20 +1323,20 @@ namespace thenable {
          * It applies variadic templates to a function in reverse by recursively calling itself with the template parameters shifted over
          * */
 
-        template <class ...Head>
+        template <typename... Head>
         struct forward_waterfall;
 
         template <>
         struct forward_waterfall<> {
-            template <class ...Rest>
+            template <typename... Rest>
             static inline decltype( auto ) apply( Rest &&... rest ) {
                 return reverse_waterfall( std::forward<Rest>( rest )... );
             }
         };
 
-        template <class First, class ...Head>
+        template <typename First, typename... Head>
         struct forward_waterfall<First, Head...> {
-            template <class ...Rest>
+            template <typename... Rest>
             static inline decltype( auto ) apply( First &&first, Head &&... head, Rest &&... rest ) {
                 return forward_waterfall<Head...>::apply( std::forward<Head>( head )..., std::forward<First>( first ), std::forward<Rest>( rest )... );
             }
