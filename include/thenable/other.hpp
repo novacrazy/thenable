@@ -2,27 +2,27 @@
 // Created by Aaron on 9/21/2016.
 //
 
-#ifndef THENABLE_OTHER_HPP
-#define THENABLE_OTHER_HPP
+#ifndef THENABLE_OTHER_HPP_INCLUDED
+#define THENABLE_OTHER_HPP_INCLUDED
 
 #include <tuple>
 
 namespace thenable {
     namespace detail {
-        template <typename Functor, typename T, std::size_t... S>
-        inline decltype( auto ) invoke_helper( Functor &&func, T &&t, std::index_sequence<S...> ) {
-            return func( std::get<S>( std::forward<T>( t ))... );
+        template <typename Functor, typename... Args, std::size_t... S>
+        inline typename std::result_of<Functor(Args...)>::type
+        invoke_helper( Functor &&func, std::tuple<Args...> &&args, std::index_sequence<S...> ) {
+            return func( std::get<S>( std::forward<std::tuple<Args...>>( args ))... );
         }
 
-        template <typename Functor, typename T>
-        inline decltype( auto ) invoke_tuple( Functor &&func, T &&t ) {
-            constexpr auto Size = std::tuple_size<typename std::decay<T>::type>::value;
-
+        template <typename Functor, typename... Args>
+        inline typename std::result_of<Functor(Args...)>::type
+        invoke_tuple( Functor &&func, std::tuple<Args...> &&args ) {
             return invoke_helper( std::forward<Functor>( func ),
-                                  std::forward<T>( t ),
-                                  std::make_index_sequence<Size>{} );
+                                  std::forward<std::tuple<Args...>>( args ),
+                                  std::make_index_sequence<sizeof...(Args)>{} );
         }
     }
 }
 
-#endif //THENABLE_OTHER_HPP
+#endif //THENABLE_OTHER_HPP_INCLUDED
