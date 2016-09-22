@@ -53,17 +53,6 @@ namespace thenable {
 
     //////////
 
-    template <typename>
-    class ThenableFuture;
-
-    template <typename>
-    class ThenableSharedFuture;
-
-    template <typename>
-    class ThenablePromise;
-
-    //////////
-
     template <typename Functor, typename... Args>
     inline std::future<typename std::result_of<Functor( Args... )>::type> defer( Functor &&fn, Args &&...args ) {
         return std::async( std::launch::deferred, std::forward<Functor>( fn ), std::forward<Args>( args )... );
@@ -295,6 +284,32 @@ namespace thenable {
 
         }, policy );
     }
+
+    template <typename T, typename _Rep, typename _Period>
+    std::future<std::decay_t<T>> timeout( std::chrono::duration<_Rep, _Period> duration, T &&value ) {
+        auto p = std::make_shared<std::promise<std::decay_t<T>>>();
+
+        std::thread( [p, duration]( std::decay_t<T> &&value2 ) THENABLE_NOEXCEPT {
+            std::this_thread::sleep_for( duration );
+
+            p->set_value( value2 );
+        }, std::forward<std::decay_t<T>>( value )).detach();
+
+        return p->get_future();
+    };
+
+    template <typename _Rep, typename _Period>
+    std::future<void> timeout( std::chrono::duration<_Rep, _Period> duration ) {
+        auto p = std::make_shared<std::promise<void>>();
+
+        std::thread( [p, duration]() THENABLE_NOEXCEPT {
+            std::this_thread::sleep_for( duration );
+
+            p->set_value();
+        } ).detach();
+
+        return p->get_future();
+    };
 }
 
 #endif //THENABLE_IMPLEMENTATION_HPP
