@@ -10,12 +10,6 @@
 #include <future>
 
 namespace thenable {
-    template <typename>
-    class ThenableFuture;
-
-    template <typename>
-    class ThenableSharedFuture;
-
     namespace detail {
         template <typename T>
         struct is_future_impl : std::false_type {
@@ -27,14 +21,6 @@ namespace thenable {
 
         template <typename T>
         struct is_future_impl<std::shared_future<T>> : std::true_type {
-        };
-
-        template <typename T>
-        struct is_future_impl<ThenableFuture<T>> : std::true_type {
-        };
-
-        template <typename T>
-        struct is_future_impl<ThenableSharedFuture<T>> : std::true_type {
         };
 
         template <typename T>
