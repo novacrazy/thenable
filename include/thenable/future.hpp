@@ -2,8 +2,8 @@
 // Created by Aaron on 9/22/2016.
 //
 
-#ifndef THENABLE_FUTURE_HPP
-#define THENABLE_FUTURE_HPP
+#ifndef THENABLE_FUTURE_HPP_INCLUDED
+#define THENABLE_FUTURE_HPP_INCLUDED
 
 #include <thenable/thenable.hpp>
 
@@ -82,12 +82,12 @@ namespace thenable {
     //////////
 
     template <typename T, typename Functor, template <typename> typename FutureType, typename PolicyType = std::launch>
-    inline thenable_equivalent_t<FutureType<result_of_cb_t<Functor, T>>> then2( FutureType<T> &&fut, Functor &&fn, PolicyType policy = default_policy ) {
+    inline ThenableFuture<result_of_cb_t<Functor, T>> then2( FutureType<T> &&fut, Functor &&fn, PolicyType policy = default_policy ) {
         return to_thenable( then( std::forward<FutureType<T>>( fut ), std::forward<Functor>( fn ), policy ));
     };
 
     template <typename T, typename Functor, template <typename> typename FutureType, typename PolicyType = std::launch>
-    inline thenable_equivalent_t<FutureType<result_of_cb_t<Functor, T>>> then2( FutureType<T> &fut, Functor &&fn, PolicyType policy = default_policy ) {
+    inline ThenableFuture<result_of_cb_t<Functor, T>> then2( FutureType<T> &fut, Functor &&fn, PolicyType policy = default_policy ) {
         return to_thenable( then( std::move( fut ), std::forward<Functor>( fn ), policy ));
     };
 
@@ -187,7 +187,8 @@ namespace thenable {
 
             template <typename Functor, typename PolicyType = std::launch>
             inline ThenableFuture<typename result_of_cb<Functor, T>::type> then( Functor &&fn, PolicyType policy = default_policy ) {
-                return then2( *this, std::forward<Functor>( fn ), policy );
+                //Makes a copy of the current shared future so it doesn't move and invalidate this
+                return then2( std::shared_future<T>( *this ), std::forward<Functor>( fn ), policy );
             }
     };
 
@@ -230,4 +231,4 @@ namespace thenable {
     };
 }
 
-#endif //THENABLE_FUTURE_HPP
+#endif //THENABLE_FUTURE_HPP_INCLUDED
