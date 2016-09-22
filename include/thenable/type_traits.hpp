@@ -2,11 +2,11 @@
 // Created by Aaron on 9/21/2016.
 //
 
-#ifndef THENABLE_TYPE_TRAITS_HPP
-#define THENABLE_TYPE_TRAITS_HPP
+#ifndef THENABLE_TYPE_TRAITS_HPP_INCLUDED
+#define THENABLE_TYPE_TRAITS_HPP_INCLUDED
 
-#include <tuple>
 #include <type_traits>
+#include <tuple>
 #include <future>
 
 namespace thenable {
@@ -92,12 +92,12 @@ namespace thenable {
     template <typename T>
     constexpr bool is_future_v = is_future<T>::value;
 
-    template <typename Functor, typename T>
+    template <typename Functor, typename T = void>
     struct result_of_cb {
         typedef typename detail::result_of_cb_impl<Functor, T>::type type;
     };
 
-    template <typename Functor, typename T>
+    template <typename Functor, typename T = void>
     using result_of_cb_t = typename result_of_cb<Functor, T>::type;
 
     template <typename... Functors>
@@ -109,4 +109,4 @@ namespace thenable {
     using recursive_result_of_cb_t = typename recursive_result_of_cb<Functors...>::type;
 }
 
-#endif //THENABLE_TYPE_TRAITS_HPP
+#endif //THENABLE_TYPE_TRAITS_HPP_INCLUDED

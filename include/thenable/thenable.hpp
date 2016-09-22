@@ -2,47 +2,19 @@
 // Created by Aaron on 8/17/2016.
 //
 
-#ifndef THENABLE_IMPLEMENTATION_HPP
-#define THENABLE_IMPLEMENTATION_HPP
+#ifndef THENABLE_IMPLEMENTATION_HPP_INCLUDED
+#define THENABLE_IMPLEMENTATION_HPP_INCLUDED
 
 #include <thenable/other.hpp>
 #include <thenable/type_traits.hpp>
 
-#include <assert.h>
 #include <future>
 #include <tuple>
 #include <memory>
 #include <thread>
 #include <chrono>
 
-//This is defined so it can be quickly toggled if something needs debugging
 #define THENABLE_NOEXCEPT noexcept
-
-/*
- * This is here for the few situations where the result is simply too complex to express as anything other than decltype(auto),
- * but I know it will return a certain form of a value. Like std::future<auto>, where it is a future type, but the value of auto is entirely contextual based on what
- * you give the function. Especially with the waterfall function, where the value of the future is based upon recursive asynchronous functions. There is a point where
- * I just give up trying to express that.
- *
- * Even implicit_result_of is decltype based, because it doesn't know either. It was just a bit simpler to do that for one function deep.
- * */
-#ifdef DOXYGEN_DEFINED
-#define THENABLE_DECLTYPE_AUTO_HINTED(hint) hint<auto>
-#else
-#define THENABLE_DECLTYPE_AUTO_HINTED( hint ) decltype(auto)
-#endif
-
-/*
- * The `then` function implemented below is designed to be very similar to JavaScript's Promise.then in functionality.
- *
- * You provide it with a promise or future/shared_future object, and it will invoke a callback with the result of that promise or future.
- *
- * Additionally, it will resolve recursive futures. As in, if the original future resolves to another future, and so forth.
- *
- * It will also resolve futures/promises returned by the callback, so the future returned by `then` will always resolve to a non-future type.
- *
- * Basically, you can layer up whatever you want and it'll resolve them all.
- * */
 
 namespace thenable {
     constexpr std::launch default_policy = std::launch::deferred | std::launch::async;
@@ -312,4 +284,4 @@ namespace thenable {
     };
 }
 
-#endif //THENABLE_IMPLEMENTATION_HPP
+#endif //THENABLE_IMPLEMENTATION_HPP_INCLUDED
