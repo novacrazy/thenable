@@ -257,29 +257,63 @@ namespace thenable {
     }
 
     template <typename T, typename _Rep, typename _Period>
-    std::future<std::decay_t<T>> timeout( std::chrono::duration<_Rep, _Period> duration, T &&value ) {
+    std::future<std::decay_t<T>> timeout( std::chrono::duration<_Rep, _Period> duration, T &&value, std::launch policy = default_policy ) {
         auto p = std::make_shared<std::promise<std::decay_t<T>>>();
 
-        std::thread( [p, duration]( std::decay_t<T> &&value2 ) THENABLE_NOEXCEPT {
+        return then( defer( [p, duration]( std::decay_t<T> &&value2 ) THENABLE_NOEXCEPT {
             std::this_thread::sleep_for( duration );
 
             p->set_value( value2 );
-        }, std::forward<std::decay_t<T>>( value )).detach();
 
-        return p->get_future();
+        }, static_cast<std::decay_t<T> &&>(value)), [p] {
+            return p->get_future();
+
+        }, policy );
     };
 
     template <typename _Rep, typename _Period>
-    std::future<void> timeout( std::chrono::duration<_Rep, _Period> duration ) {
+    std::future<void> timeout( std::chrono::duration<_Rep, _Period> duration, std::launch policy = default_policy ) {
         auto p = std::make_shared<std::promise<void>>();
 
-        std::thread( [p, duration]() THENABLE_NOEXCEPT {
+        return then( defer( [p, duration]() THENABLE_NOEXCEPT {
             std::this_thread::sleep_for( duration );
 
             p->set_value();
-        } ).detach();
 
-        return p->get_future();
+        } ), [p] {
+            return p->get_future();
+
+        }, policy );
+    };
+
+    template <typename T, typename _Rep, typename _Period>
+    std::future<std::decay_t<T>> timeout( std::chrono::duration<_Rep, _Period> duration, T &&value, then_launch policy ) {
+        auto p = std::make_shared<std::promise<std::decay_t<T>>>();
+
+        return then( defer( [p, duration]( std::decay_t<T> &&value2 ) THENABLE_NOEXCEPT {
+            std::this_thread::sleep_for( duration );
+
+            p->set_value( value2 );
+
+        }, static_cast<std::decay_t<T> &&>(value)), [p] {
+            return p->get_future();
+
+        }, policy );
+    };
+
+    template <typename _Rep, typename _Period>
+    std::future<void> timeout( std::chrono::duration<_Rep, _Period> duration, then_launch policy ) {
+        auto p = std::make_shared<std::promise<void>>();
+
+        return then( defer( [p, duration]() THENABLE_NOEXCEPT {
+            std::this_thread::sleep_for( duration );
+
+            p->set_value();
+
+        } ), [p] {
+            return p->get_future();
+
+        }, policy );
     };
 }
 

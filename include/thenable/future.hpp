@@ -331,13 +331,23 @@ namespace thenable {
      * */
 
     template <typename T, typename _Rep, typename _Period>
-    ThenableFuture<std::decay_t<T>> timeout2( std::chrono::duration<_Rep, _Period> duration, T &&value ) {
-        return to_thenable( timeout( duration, std::forward<T>( value )));
+    inline ThenableFuture<std::decay_t<T>> timeout2( std::chrono::duration<_Rep, _Period> duration, T &&value, std::launch policy = default_policy ) {
+        return to_thenable( timeout( duration, std::forward<T>( value ), policy ));
+    };
+
+    template <typename T, typename _Rep, typename _Period>
+    inline ThenableFuture<std::decay_t<T>> timeout2( std::chrono::duration<_Rep, _Period> duration, T &&value, then_launch policy ) {
+        return to_thenable( timeout( duration, std::forward<T>( value ), policy ));
     };
 
     template <typename _Rep, typename _Period>
-    ThenableFuture<void> timeout2( std::chrono::duration<_Rep, _Period> duration ) {
-        return to_thenable( timeout( duration ));
+    inline ThenableFuture<void> timeout2( std::chrono::duration<_Rep, _Period> duration, std::launch policy = default_policy ) {
+        return to_thenable( timeout( duration, policy ));
+    };
+
+    template <typename _Rep, typename _Period>
+    inline ThenableFuture<void> timeout2( std::chrono::duration<_Rep, _Period> duration, then_launch policy ) {
+        return to_thenable( timeout( duration, policy ));
     };
 }
 
