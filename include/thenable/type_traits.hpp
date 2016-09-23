@@ -11,6 +11,20 @@
 
 namespace thenable {
     namespace detail {
+        template <typename Functor, typename... Args, std::size_t... S>
+        inline typename std::result_of<Functor(Args...)>::type
+        apply_helper( Functor &&func, std::tuple<Args...> &&args, std::index_sequence<S...> ) {
+            return func( std::get<S>( std::forward<std::tuple<Args...>>( args ))... );
+        }
+
+        template <typename Functor, typename... Args>
+        inline typename std::result_of<Functor(Args...)>::type
+        apply( Functor &&func, std::tuple<Args...> &&args ) {
+            return apply_helper( std::forward<Functor>( func ),
+                                  std::forward<std::tuple<Args...>>( args ),
+                                  std::make_index_sequence<sizeof...(Args)>{} );
+        }
+
         template <typename T>
         struct is_future_impl : std::false_type {
         };

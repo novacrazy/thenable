@@ -5,7 +5,6 @@
 #ifndef THENABLE_IMPLEMENTATION_HPP_INCLUDED
 #define THENABLE_IMPLEMENTATION_HPP_INCLUDED
 
-#include <thenable/other.hpp>
 #include <thenable/type_traits.hpp>
 
 #include <future>
@@ -78,7 +77,7 @@ namespace thenable {
 
             template <typename... Args>
             inline static ResultType invoke( Functor &&fn, std::tuple<Args...> &&args ) {
-                return recursive_get( invoke_tuple( std::forward<Functor>( fn ), std::forward<std::tuple<Args...>>( args )));
+                return recursive_get( apply( std::forward<Functor>( fn ), std::forward<std::tuple<Args...>>( args )));
             }
         };
 
@@ -96,7 +95,7 @@ namespace thenable {
 
             template <typename... Args>
             inline static void invoke( Functor &&fn, std::tuple<Args...> &&args ) {
-                invoke_tuple( std::forward<Functor>( fn ), std::forward<std::tuple<Args...>>( args ));
+                apply( std::forward<Functor>( fn ), std::forward<std::tuple<Args...>>( args ));
             }
         };
 
