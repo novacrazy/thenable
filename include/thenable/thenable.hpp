@@ -187,17 +187,18 @@ namespace thenable {
         //Because my IDE is silly sometimes, I need to point out to it that FutureType<T> exists on the inner scope below
         typedef FutureType<T> FutureTypeT;
 
-        auto p = std::make_shared<std::promise<ResultType>>();
+        std::promise<ResultType> p;
 
-        //Use lambda to capture the shared_ptr by value
-        std::thread( [p]( FutureType<T> &&fut2, Functor &&fn2 ) {
-            detail::detached_then_helper<ResultType>::dispatch( *p,
+        std::future<ResultType> &&res = p.get_future();
+
+        std::thread( []( FutureType<T> &&fut2, Functor &&fn2, std::promise<ResultType> &&p2 ) {
+            detail::detached_then_helper<ResultType>::dispatch( p2,
                                                                 std::forward<FutureTypeT>( fut2 ),
                                                                 std::forward<Functor>( fn2 ));
 
-        }, std::forward<FutureType<T>>( fut ), std::forward<Functor>( fn )).detach();
+        }, std::forward<FutureType<T>>( fut ), std::forward<Functor>( fn ), std::move( p )).detach();
 
-        return p->get_future();
+        return std::forward<std::future<ResultType>>( res );
     };
 
     template <typename T, typename Functor, template <typename> typename FutureType>
