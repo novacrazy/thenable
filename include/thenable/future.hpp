@@ -266,6 +266,8 @@ namespace thenable {
     to_thenable( FutureType0<T0> &&fut0,
                  FutureType1<T1> &&fut1,
                  FutureTypes<Ts> &&... futures ) {
+        static_assert( sizeof...( Ts ) == sizeof...( FutureTypes ));
+
         return std::tuple<thenable_equivalent_t<FutureType0<T0>>,
                           thenable_equivalent_t<FutureType1<T1>>,
                           thenable_equivalent_t<FutureTypes<Ts>>...>( std::forward<FutureType0<T0>>( fut0 ),
@@ -285,6 +287,8 @@ namespace thenable {
     to_thenable( FutureType0<T0> &fut0,
                  FutureType1<T1> &fut1,
                  FutureTypes<Ts> &... futures ) {
+        static_assert( sizeof...( Ts ) == sizeof...( FutureTypes ));
+
         return std::tuple<thenable_equivalent_t<FutureType0<T0>>,
                           thenable_equivalent_t<FutureType1<T1>>,
                           thenable_equivalent_t<FutureTypes<Ts>>...>( std::move( fut0 ),
@@ -294,11 +298,15 @@ namespace thenable {
 
     template <typename... Ts, template <typename> typename... FutureTypes>
     constexpr std::tuple<thenable_equivalent_t<FutureTypes<Ts>>...> to_thenable_tuple( std::tuple<FutureTypes<Ts>...> &&futures ) {
+        static_assert( sizeof...( Ts ) == sizeof...( FutureTypes ));
+
         return std::tuple<thenable_equivalent_t<FutureTypes<Ts>>...>( std::forward<std::tuple<FutureTypes<Ts>...>>( futures ));
     };
 
     template <typename... Ts, template <typename> typename... FutureTypes>
     constexpr std::tuple<thenable_equivalent_t<FutureTypes<Ts>>...> to_thenable_tuple( std::tuple<FutureTypes<Ts>...> &futures ) {
+        static_assert( sizeof...( Ts ) == sizeof...( FutureTypes ));
+
         return std::tuple<thenable_equivalent_t<FutureTypes<Ts>>...>( std::move( futures ));
     };
 
