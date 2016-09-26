@@ -147,11 +147,16 @@ namespace thenable {
         return then( p.get_future(), std::forward<Functor>( fn ), policy );
     };
 
+    template <typename T, typename Functor>
+    inline std::future<result_of_cb_t<Functor, T>> then( std::promise<T> &&p, Functor &&fn, std::launch policy = default_policy ) {
+        return then( p.get_future(), std::forward<Functor>( fn ), policy );
+    };
+
     namespace detail {
         template <typename T>
         struct detached_then_helper {
             template <typename Functor, typename K, template <typename> typename FutureType>
-            static inline void dispatch( std::promise<T> &p, FutureType<K> &&fut, Functor &&fn ) THENABLE_NOEXCEPT {
+            static inline void dispatch( std::promise<T> &&p, FutureType<K> &&fut, Functor &&fn ) THENABLE_NOEXCEPT {
                 try {
                     p.set_value( then_helper<Functor, K>::dispatch( std::forward<FutureType<K>>( fut ),
                                                                     std::forward<Functor>( fn )));
@@ -164,7 +169,7 @@ namespace thenable {
         template <>
         struct detached_then_helper<void> {
             template <typename Functor, typename K, template <typename> typename FutureType>
-            static inline void dispatch( std::promise<void> &p, FutureType<K> &&fut, Functor &&fn ) THENABLE_NOEXCEPT {
+            static inline void dispatch( std::promise<void> &&p, FutureType<K> &&fut, Functor &&fn ) THENABLE_NOEXCEPT {
                 try {
                     then_helper<Functor, K>::dispatch( std::forward<FutureType<K>>( fut ),
                                                        std::forward<Functor>( fn ));
@@ -176,6 +181,11 @@ namespace thenable {
                 }
             }
         };
+
+        template <typename R, typename T, typename Functor>
+        inline void deferred_detached_dispatch( std::promise<R> &&p, T &&fut, Functor &&fn ) {
+            detached_then_helper<R>::dispatch( std::forward<std::promise<R>>( p ), std::forward<T>( fut ), std::forward<Functor>( fn ));
+        };
     }
 
     template <typename T, typename Functor, template <typename> typename FutureType>
@@ -184,19 +194,15 @@ namespace thenable {
 
         typedef typename result_of_cb<Functor, T>::type ResultType;
 
-        //Because my IDE is silly sometimes, I need to point out to it that FutureType<T> exists on the inner scope below
-        typedef FutureType<T> FutureTypeT;
-
         std::promise<ResultType> p;
 
         std::future<ResultType> &&res = p.get_future();
 
-        std::thread( []( FutureType<T> &&fut2, Functor &&fn2, std::promise<ResultType> &&p2 ) {
-            detail::detached_then_helper<ResultType>::dispatch( p2,
-                                                                std::forward<FutureTypeT>( fut2 ),
-                                                                std::forward<Functor>( fn2 ));
-
-        }, std::forward<FutureType<T>>( fut ), std::forward<Functor>( fn ), std::move( p )).detach();
+        std::thread( detail::deferred_detached_dispatch<ResultType, FutureType<T>, Functor>,
+                     std::move( p ),
+                     std::forward<FutureType<T>>( fut ),
+                     std::forward<Functor>( fn )
+        ).detach();
 
         return std::forward<std::future<ResultType>>( res );
     };
@@ -242,24 +248,11 @@ namespace thenable {
                 }
             }
         };
-    }
 
-    template <typename T = void, typename Functor, typename PolicyType = std::launch>
-    std::future<T> make_promise( Functor &&fn, PolicyType policy = default_policy ) {
-        auto p = std::make_shared<std::promise<T>>();
-
-        return then( defer( [p]( Functor &&fn2 ) THENABLE_NOEXCEPT {
-            detail::make_promise_helper<T>::dispatch( std::forward<Functor>( fn2 ), p );
-
-        }, std::forward<Functor>( fn )), [p] {
-            return p->get_future();
-
-        }, policy );
-    }
-
-    namespace detail {
-        constexpr void noop() noexcept {
-        }
+        template <typename T, typename Functor>
+        inline void deferred_make_promise_dispatch( Functor &&fn, std::shared_ptr<std::promise<T>> &&p ) THENABLE_NOEXCEPT {
+            detail::make_promise_helper<T>::dispatch( std::forward<Functor>( fn ), p );
+        };
     }
 
 #ifndef DOXYGEN_DEFINED
@@ -267,8 +260,24 @@ namespace thenable {
  * So this uses syntax that my IDE (CLion EAP) doesn't recognize, so it was easier to put it into a macro for now.
  * Still no overhead, so I don't care much.
  * */
-#define THENABLE_IDENTITY_LAMBDA( value ) [value{ std::move( value ) }]() THENABLE_NOEXCEPT {return std::move_if_noexcept( value );}
+#define THENABLE_IDENTITY_LAMBDA( value ) [value{ std::move_if_noexcept( value ) }]() mutable THENABLE_NOEXCEPT {return std::move_if_noexcept( value );}
+#define THENABLE_IDENTITY_LAMBDA_FORCE_MOVE( value ) [value{std::move( value )}]() mutable THENABLE_NOEXCEPT {return std::move( value );}
 #endif
+
+    template <typename T = void, typename Functor, typename PolicyType = std::launch>
+    std::future<T> make_promise( Functor &&fn, PolicyType policy = default_policy ) {
+        auto p = std::make_shared<std::promise<T>>();
+
+        auto value = p->get_future();
+
+        return then( defer( detail::deferred_make_promise_dispatch<T, Functor>, std::forward<Functor>( fn ), std::move( p )),
+        THENABLE_IDENTITY_LAMBDA_FORCE_MOVE( value ), policy );
+    }
+
+    namespace detail {
+        constexpr void noop() noexcept {
+        }
+    }
 
     template <typename T, typename _Rep, typename _Period>
     std::future<std::decay_t<T>> timeout( std::chrono::duration<_Rep, _Period> duration, T &&value, std::launch policy = default_policy ) {
