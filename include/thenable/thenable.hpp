@@ -122,6 +122,8 @@ namespace thenable {
             }
         };
 
+        //////////
+
         template <typename T, typename Functor, template <typename> typename FutureType>
         inline result_of_cb_t<Functor, T> deferred_then_dispatch( FutureType<T> &&fut, Functor &&fn ) {
             return then_helper<Functor, T>::dispatch( std::forward<FutureType<T>>( fut ),
@@ -142,6 +144,8 @@ namespace thenable {
         return then( std::move( fut ), std::forward<Functor>( fn ), policy );
     };
 
+    //////////
+
     template <typename T, typename Functor>
     inline std::future<result_of_cb_t<Functor, T>> then( std::promise<T> &p, Functor &&fn, std::launch policy = default_policy ) {
         return then( p.get_future(), std::forward<Functor>( fn ), policy );
@@ -151,6 +155,8 @@ namespace thenable {
     inline std::future<result_of_cb_t<Functor, T>> then( std::promise<T> &&p, Functor &&fn, std::launch policy = default_policy ) {
         return then( p.get_future(), std::forward<Functor>( fn ), policy );
     };
+
+    //////////
 
     namespace detail {
         template <typename T>
@@ -188,6 +194,8 @@ namespace thenable {
         };
     }
 
+    //////////
+
     template <typename T, typename Functor, template <typename> typename FutureType>
     std::future<result_of_cb_t<Functor, T>> then( FutureType<T> &&fut, Functor &&fn, then_launch policy ) {
         static_assert( is_future_v<FutureType<T>> );
@@ -211,6 +219,8 @@ namespace thenable {
     inline std::future<result_of_cb_t<Functor, T>> then( FutureType<T> &fut, Functor &&fn, then_launch policy ) {
         return then( std::move( fut ), std::forward<Functor>( fn ), policy );
     };
+
+    //////////
 
     namespace detail {
         template <typename T>
@@ -249,10 +259,17 @@ namespace thenable {
             }
         };
 
+        //////////
+
         template <typename T, typename Functor>
         inline void deferred_make_promise_dispatch( Functor &&fn, std::shared_ptr<std::promise<T>> &&p ) THENABLE_NOEXCEPT {
             detail::make_promise_helper<T>::dispatch( std::forward<Functor>( fn ), p );
         };
+
+        //////////
+
+        constexpr void noop() noexcept {
+        }
     }
 
 #ifndef DOXYGEN_DEFINED
@@ -274,10 +291,7 @@ namespace thenable {
         THENABLE_IDENTITY_LAMBDA_FORCE_MOVE( value ), policy );
     }
 
-    namespace detail {
-        constexpr void noop() noexcept {
-        }
-    }
+    //////////
 
     template <typename T, typename _Rep, typename _Period>
     std::future<std::decay_t<T>> timeout( std::chrono::duration<_Rep, _Period> duration, T &&value, std::launch policy = default_policy ) {
