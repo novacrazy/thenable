@@ -1,6 +1,8 @@
 thenable
 ========
 
+### This project has been postponed and no longer being actively worked on. I would not recommend using it in this state, but feel free to browse the code and steal anything useful.
+
 > "There is a point where we needed to stop and we have clearly passed it but let’s keep going and see what happens."
 
 This is a generic implementation of `then` for C++14, allowing you to chain together futures, promises and so forth easily and efficiently.
